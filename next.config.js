@@ -13,10 +13,14 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    esmExternals: 'loose',
+  },
 };
 
 module.exports = withPayload(
   {
+    // your Next config here
     ...nextConfig,
   },
   {
