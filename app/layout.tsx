@@ -1,7 +1,6 @@
-"use client";
-
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { AuthProvider } from "./_providers/Auth";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import "node_modules/react-modal-video/css/modal-video.css";
@@ -23,15 +22,44 @@ export default function RootLayout({
       <head />
 
       <body className={`bg-[#FCFCFC] dark:bg-black ${inter.className}`}>
-        <Providers>
-          <Header />
-          {children}
-          <Footer />
-          <ScrollToTop />
-        </Providers>
+        <AuthProvider
+          // To toggle between the REST and GraphQL APIs,
+          // change the `api` prop to either `rest` or `gql`
+          api="rest" // change this to `gql` to use the GraphQL API
+        >
+          <Providers>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <ScrollToTop />
+          </Providers>
+        </AuthProvider>
       </body>
     </html>
   );
 }
+
+// export default async function RootLayout(props: { children: React.ReactNode }) {
+//   const { children } = props;
+
+//   return (
+//     <html lang="en">
+//       <body>
+//         <AuthProvider
+//           // To toggle between the REST and GraphQL APIs,
+//           // change the `api` prop to either `rest` or `gql`
+//           api="rest" // change this to `gql` to use the GraphQL API
+//         >
+//           <Providers>
+//             <Header />
+//             <main>{children}</main>
+//             <Footer />
+//             <ScrollToTop />
+//           </Providers>
+//         </AuthProvider>
+//       </body>
+//     </html>
+//   );
+// }
 
 import { Providers } from "./providers";
