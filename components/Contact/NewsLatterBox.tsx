@@ -64,12 +64,12 @@ const NewsLatterBox = () => {
                 gradientUnits="userSpaceOnUse"
               >
                 <stop
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0.62"
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
@@ -100,12 +100,12 @@ const NewsLatterBox = () => {
                 gradientUnits="userSpaceOnUse"
               >
                 <stop
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0.62"
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
@@ -136,12 +136,12 @@ const NewsLatterBox = () => {
                 gradientUnits="userSpaceOnUse"
               >
                 <stop
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0.62"
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
@@ -190,11 +190,11 @@ const NewsLatterBox = () => {
               >
                 <stop
                   offset="0.328125"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
@@ -208,11 +208,11 @@ const NewsLatterBox = () => {
               >
                 <stop
                   offset="0.328125"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
@@ -226,11 +226,11 @@ const NewsLatterBox = () => {
               >
                 <stop
                   offset="0.328125"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
@@ -244,11 +244,11 @@ const NewsLatterBox = () => {
               >
                 <stop
                   offset="0.328125"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                 />
                 <stop
                   offset="1"
-                  stopColor={theme === "light" ? "#4A6CF7" : "#fff"}
+                  stopColor={theme === "light" ? "#49A7D7" : "#fff"}
                   stopOpacity="0"
                 />
               </linearGradient>
