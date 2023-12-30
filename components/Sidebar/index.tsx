@@ -38,7 +38,7 @@ const Sidebar = () => {
           </Link>
         </div>
       </div>
-      <main className='ml-20 w-full'>hello</main>
+      <main className='ml-20 w-full'></main>
     </div>
   );
 };

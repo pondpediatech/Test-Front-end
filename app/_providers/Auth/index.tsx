@@ -41,6 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode; api?: 'rest' | 
     async args => {
       if (api === 'rest') {
         const user = await rest(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/login`, args)
+
         setUser(user)
         return user
       }
