@@ -2,8 +2,8 @@
 
 import React, { useCallback, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../_providers/Auth'
+import { useRouter, useSearchParams } from 'next/navigation'
 // import { Input } from '../../../components/Input'
 
 import Link from "next/link";
@@ -37,7 +37,6 @@ const SigninPage: React.FC = () => {
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      console.log(data)
       try {
         await login(data)
         if (redirect?.current) router.push(redirect.current as string)
