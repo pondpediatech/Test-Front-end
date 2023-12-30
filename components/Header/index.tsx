@@ -6,10 +6,13 @@ import { useEffect, useState } from "react";
 import { HeaderNav } from "./Nav";
 import menuData from "./menuData";
 import ThemeToggler from "./ThemeToggler";
+import { useAuth } from "../../app/_providers/Auth";
 
 const Header = () => {
   // Navbar toggle
+  const { user } = useAuth();
   const [navbarOpen, setNavbarOpen] = useState(false);
+
   const navbarToggleHandler = () => {
     setNavbarOpen(!navbarOpen);
   };
@@ -161,30 +164,62 @@ const Header = () => {
                         )}
                       </li>
                     ))}
-                    <li className="group relative lg:hidden">
-                      <Link
-                        href={"./login"}
-                        className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
-                          usePathName === "./login"
-                            ? "text-primary dark:text-white"
-                            : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
-                        }`}
-                      >
-                        Login
-                      </Link>
-                    </li>
-                    <li className="group relative lg:hidden">
-                      <Link
-                        href={"./signup"}
-                        className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
-                          usePathName === "./signup"
-                            ? "text-primary dark:text-white"
-                            : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
-                        }`}
-                      >
-                        Sign Up
-                      </Link>
-                    </li>
+                    {user && (
+                      <>
+                        <li className="group relative lg:hidden">
+                          <Link
+                            href={"./account"}
+                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                              usePathName === "./account"
+                                ? "text-primary dark:text-white"
+                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                            }`}
+                          >
+                            Account
+                          </Link>
+                        </li>
+                        <li className="group relative lg:hidden">
+                          <Link
+                            href={"./logout"}
+                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                              usePathName === "./logout"
+                                ? "text-primary dark:text-white"
+                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                            }`}
+                          >
+                            Sign Out
+                          </Link>
+                        </li>
+                      </>
+                    )}
+                    {!user && (
+                      <>
+                        <li className="group relative lg:hidden">
+                          <Link
+                            href={"./login"}
+                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                              usePathName === "./login"
+                                ? "text-primary dark:text-white"
+                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                            }`}
+                          >
+                            Login
+                          </Link>
+                        </li>
+                        <li className="group relative lg:hidden">
+                          <Link
+                            href={"./signup"}
+                            className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                              usePathName === "./signup"
+                                ? "text-primary dark:text-white"
+                                : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                            }`}
+                          >
+                            Sign Up
+                          </Link>
+                        </li>
+                      </>
+                    )}
                   </ul>
                 </nav>
               </div>
