@@ -5,12 +5,8 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Inter } from "next/font/google";
 import "node_modules/react-modal-video/css/modal-video.css";
 import "../styles/index.css";
-import withConditionalRendering from "./_utilities/conditionalRender";
 
 const inter = Inter({ subsets: ["latin"] });
-
-const ConditionalHeader = withConditionalRendering(Header);
-const ConditionalFooter = withConditionalRendering(Footer);
 
 export default function RootLayout({
   children,
