@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { HeaderNav } from './Nav'
+import { HeaderNav } from "./Nav";
 import menuData from "./menuData";
+import ThemeToggler from "./ThemeToggler";
 
 const Header = () => {
   // Navbar toggle
@@ -160,6 +161,30 @@ const Header = () => {
                         )}
                       </li>
                     ))}
+                    <li className="group relative lg:hidden">
+                      <Link
+                        href={"./login"}
+                        className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                          usePathName === "./login"
+                            ? "text-primary dark:text-white"
+                            : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                        }`}
+                      >
+                        Login
+                      </Link>
+                    </li>
+                    <li className="group relative lg:hidden">
+                      <Link
+                        href={"./signup"}
+                        className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
+                          usePathName === "./signup"
+                            ? "text-primary dark:text-white"
+                            : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
+                        }`}
+                      >
+                        Sign Up
+                      </Link>
+                    </li>
                   </ul>
                 </nav>
               </div>
