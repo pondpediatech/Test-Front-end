@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const { user } = await getMeUser({
+  await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       "You must be logged in to access your account.",
     )}&redirect=${encodeURIComponent("/account")}`,

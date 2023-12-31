@@ -7,7 +7,7 @@ const Footer = () => {
   const pathname = usePathname();
   return (
     <>
-      {pathname === "/account" ? (
+      {pathname?.includes("/account") || pathname?.includes("/admin") ? (
         <div></div>
       ) : (
         <footer

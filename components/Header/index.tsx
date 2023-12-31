@@ -44,7 +44,7 @@ const Header = () => {
 
   return (
     <>
-      {usePathName === "/account" ? (
+      {usePathName?.includes("/account") || usePathName?.includes("/admin") ? (
         <div></div>
       ) : (
         <header
