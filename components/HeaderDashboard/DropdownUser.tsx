@@ -1,12 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
+import { useAuth } from "../../app/_providers/Auth";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [occupation, setOccupation] = useState('');
+  const { user } = useAuth();
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
+  const router = useRouter();
 
   // close on click outside
   useEffect(() => {
@@ -34,6 +41,19 @@ const DropdownUser = () => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
+  useEffect(() => {
+    if (user === null) {
+      router.push(`/login?unauthorized=account`)
+    }
+
+    // Once user is loaded, reset form to have default values
+    if (user) {
+      console.log('being executed!')
+      setName(user.name!);
+      setOccupation(user.occupation!);
+    }
+  }, [user])
+
   return (
     <div className="relative">
       <Link
@@ -44,9 +64,9 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {name}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">{occupation}</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
