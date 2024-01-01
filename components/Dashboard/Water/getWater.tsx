@@ -21,7 +21,6 @@ export interface WaterData {
 export default function GetWater() {
   // Fetcher function for allWaterData
   const fetchAllWaterData = async (url) => {
-    url += "?allData=true";
     const response = await fetch(url);
     return response.json();
   };
@@ -31,7 +30,7 @@ export default function GetWater() {
     `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/water`,
     fetchAllWaterData,
     {
-      refreshInterval: 5000, // Fetch every 5 seconds
+      refreshInterval: 25000, // Fetch every 5 seconds
     },
   );
 
@@ -40,26 +39,32 @@ export default function GetWater() {
 
   const lastEntry = allWaterData[allWaterData.length - 1].data.series[0];
   const secondLastEntry = allWaterData[allWaterData.length - 2].data.series[0];
+
+  const calculatePercentageChange = (currentValue, previousValue) => {
+    return ((currentValue - previousValue) / previousValue) * 100;
+  };
   
-  const lastValueDO: number = lastEntry.dox;
-  const secondLastValueDO: number = secondLastEntry.dox;
-  const percentageChangeDO: number = ((lastValueDO - secondLastValueDO) / secondLastValueDO) * 100;
+  const {
+    dox: lastValueDO,
+    ph: lastValuePH,
+    temp: lastValueTemperature,
+    tds: lastValueTDS,
+    turb: lastValueTurbidity,
+  } = lastEntry;
   
-  const lastValuePH: number = lastEntry.ph;
-  const secondLastValuePH: number = secondLastEntry.ph;
-  const percentageChangePH: number = ((lastValuePH - secondLastValuePH) / secondLastValuePH) * 100;
-
-  const lastValueTemperature: number = lastEntry.temp;
-  const secondLastValueTemperature: number = secondLastEntry.temp;
-  const percentageChangeTemperature: number = ((lastValueTemperature - secondLastValueTemperature) / secondLastValueTemperature) * 100;
-
-  const lastValueTDS: number = lastEntry.tds;
-  const secondLastValueTDS: number = secondLastEntry.tds;
-  const percentageChangeTDS: number = ((lastValueTDS - secondLastValueTDS) / secondLastValueTDS) * 100;
-
-  const lastValueTurbidity: number = lastEntry.turb;
-  const secondLastValueTurbidity: number = secondLastEntry.turb;
-  const percentageChangeTurbidity: number = ((lastValueTurbidity - secondLastValueTurbidity) / secondLastValueTurbidity) * 100;
+  const {
+    dox: secondLastValueDO,
+    ph: secondLastValuePH,
+    temp: secondLastValueTemperature,
+    tds: secondLastValueTDS,
+    turb: secondLastValueTurbidity,
+  } = secondLastEntry;
+  
+  const percentageChangeDO = calculatePercentageChange(lastValueDO, secondLastValueDO);
+  const percentageChangePH = calculatePercentageChange(lastValuePH, secondLastValuePH);
+  const percentageChangeTemperature = calculatePercentageChange(lastValueTemperature, secondLastValueTemperature);
+  const percentageChangeTDS = calculatePercentageChange(lastValueTDS, secondLastValueTDS);
+  const percentageChangeTurbidity = calculatePercentageChange(lastValueTurbidity, secondLastValueTurbidity);
   
   return (
     <>
