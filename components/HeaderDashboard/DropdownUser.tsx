@@ -48,7 +48,6 @@ const DropdownUser = () => {
 
     // Once user is loaded, reset form to have default values
     if (user) {
-      console.log('being executed!')
       setName(user.name!);
       setOccupation(user.occupation!);
     }

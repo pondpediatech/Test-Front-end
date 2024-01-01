@@ -1,4 +1,4 @@
-import ECommerce from "@/components/Dashboard/E-commerce";
+import Water from "@/components/Dashboard/Water";
 import { Metadata } from "next";
 import { getMeUser } from "../_utilities/getMeUser";
 
@@ -17,7 +17,7 @@ export default async function Home() {
 
   return (
     <>
-      <ECommerce/>
+      <Water/>
     </>
   );
 }

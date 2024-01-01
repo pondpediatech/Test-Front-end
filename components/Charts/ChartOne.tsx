@@ -1,7 +1,8 @@
 "use client";
 import { ApexOptions } from "apexcharts";
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { WaterData } from "../Dashboard/Water/getWater";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
@@ -12,13 +13,13 @@ const options: ApexOptions = {
     position: "top",
     horizontalAlign: "left",
   },
-  colors: ["#3C50E0", "#80CAEE"],
+  colors: ["#49A7D7", "#53A9D8"],
   chart: {
-    // events: {
-    //   beforeMount: (chart) => {
-    //     chart.windowResizeHandler();
-    //   },
-    // },
+    events: {
+      beforeMount: (chart) => {
+        chart.windowResizeHandler();
+      },
+    },
     fontFamily: "Satoshi, sans-serif",
     height: 335,
     type: "area",
@@ -61,25 +62,13 @@ const options: ApexOptions = {
   //   show: false,
   //   position: "top",
   // },
-  grid: {
-    xaxis: {
-      lines: {
-        show: true,
-      },
-    },
-    yaxis: {
-      lines: {
-        show: true,
-      },
-    },
-  },
   dataLabels: {
     enabled: false,
   },
   markers: {
     size: 4,
     colors: "#fff",
-    strokeColors: ["#3056D3", "#80CAEE"],
+    strokeColors: ["#53A9D8", "#80CAEE"],
     strokeWidth: 3,
     strokeOpacity: 0.9,
     strokeDashArray: 0,
@@ -90,28 +79,36 @@ const options: ApexOptions = {
       sizeOffset: 5,
     },
   },
+  // xaxis: {
+  //   type: "datetime",
+  //   axisBorder: {
+  //     show: false,
+  //   },
+  //   axisTicks: {
+  //     show: false,
+  //   },
+  // },
   xaxis: {
-    type: "category",
-    categories: [
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-    ],
+    labels: {
+      show: false,
+      // formatter(value, timestamp, opts) {
+      //   // const date = new Date(timestamp);
+      //   // return `${date.getHours()}:${date.getMinutes()}`;
+      //   const date = new Date(value);
+      //   const options = { timeZone: 'Asia/Jakarta', hour12: false };
+      //   const timeString = date.toLocaleString('id-ID', options);
+      //   const [time, ] = timeString.split(',');
+
+      //   return `${time}`;
+
+      // },
+    },
     axisBorder: {
       show: false,
     },
     axisTicks: {
       show: false,
-    },
+    }
   },
   yaxis: {
     title: {
@@ -120,39 +117,61 @@ const options: ApexOptions = {
       },
     },
     min: 0,
-    max: 100,
+    max: 10000,
   },
 };
+
+interface DataPoint {
+  x: string;
+  y: number;
+ }
 
 interface ChartOneState {
   series: {
     name: string;
-    data: number[];
+    data: DataPoint[];
   }[];
 }
 
-const ChartOne: React.FC = () => {
+interface ChartOneProps {
+  data: WaterData[];
+  water_parameter: string;
+}
+
+const ChartOne: React.FC<ChartOneProps> = ({ data, water_parameter }) => {
   const [state, setState] = useState<ChartOneState>({
-    series: [
-      {
-        name: "Product One",
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
-
-      {
-        name: "Product Two",
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
-    ],
+    series: [],
   });
-
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
+ 
+  const transformedData = useMemo(() => {
+    return data.map((item) => ({
+      time: item.data.time,
+      data: item.data.series.map((seriesItem) => seriesItem.dox),
     }));
-  };
+  }, [data]);
 
-  handleReset;
+  useEffect(() => {
+    setState(prevState => ({
+      ...prevState,
+      series: [
+        {
+          name: "Sangat Baik 👍",
+          data: transformedData.map((series) => {
+            return {
+              x: new Date(series.time).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', hour12: false }),
+              y: series.data[0],
+            };
+          }),
+        }
+      ]
+    }))
+  },[transformedData, water_parameter])
+ 
+  // const handleReset = useCallback(() => {
+  //   setState(prevState => ({
+  //     ...prevState,
+  //   }));
+  // }, []);
 
   // NextJS Requirement
   const isWindowAvailable = () => typeof window !== "undefined";
@@ -160,43 +179,14 @@ const ChartOne: React.FC = () => {
   if (!isWindowAvailable()) return <></>;
 
   return (
-    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
+    <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-        <div className="flex w-full flex-wrap gap-3 sm:gap-5">
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-            </div>
-          </div>
-          <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-secondary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-secondary"></span>
-            </span>
-            <div className="w-full">
-              <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
-            </div>
-          </div>
-        </div>
         <div className="flex w-full max-w-45 justify-end">
-          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-              Day
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Week
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Month
-            </button>
-          </div>
+          <h4 className="text-xl font-semibold text-black dark:text-white">
+            {water_parameter}
+          </h4>
         </div>
       </div>
-
       <div>
         <div id="chartOne" className="-ml-5 h-[355px] w-[105%]">
           <ReactApexChart
