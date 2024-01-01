@@ -66,7 +66,7 @@ const options: ApexOptions = {
     enabled: false,
   },
   markers: {
-    size: 4,
+    size: 1,
     colors: "#fff",
     strokeColors: ["#53A9D8", "#80CAEE"],
     strokeWidth: 3,
@@ -116,8 +116,12 @@ const options: ApexOptions = {
         fontSize: "0px",
       },
     },
-    min: 0,
-    max: 10000,
+    min: function(min:number) {
+      return min * 0.8;
+    },
+    max: function(max:number) {
+      return max * 1.2;
+    },
   },
 };
 
@@ -144,11 +148,26 @@ const ChartOne: React.FC<ChartOneProps> = ({ data, water_parameter }) => {
   });
  
   const transformedData = useMemo(() => {
-    return data.map((item) => ({
-      time: item.data.time,
-      data: item.data.series.map((seriesItem) => seriesItem.dox),
-    }));
-  }, [data]);
+    return data.map((item) => {
+      let mappedData;
+  
+      if (water_parameter === "Dissolved Oxygen") {
+        mappedData = item.data.series.map((seriesItem) => seriesItem.dox);
+      } else if (water_parameter === "Temperature") {
+        mappedData = item.data.series.map((seriesItem) => seriesItem.temp.toFixed(2));
+      } else if (water_parameter === "Turbidity") {
+        mappedData = item.data.series.map((seriesItem) => seriesItem.turb.toFixed(2));
+      } else if (water_parameter === "pH") {
+        mappedData = item.data.series.map((seriesItem) => seriesItem.ph.toFixed(2));
+      } else if (water_parameter === "TDS") {
+        mappedData = item.data.series.map((seriesItem) => seriesItem.tds.toFixed(2));
+      }
+      return {
+        time: item.data.time,
+        data: mappedData,
+      };
+    });
+  }, [data, water_parameter]);
 
   useEffect(() => {
     setState(prevState => ({
@@ -181,7 +200,7 @@ const ChartOne: React.FC<ChartOneProps> = ({ data, water_parameter }) => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
-        <div className="flex w-full max-w-45 justify-end">
+        <div className="flex w-full max-w-45">
           <h4 className="text-xl font-semibold text-black dark:text-white">
             {water_parameter}
           </h4>
