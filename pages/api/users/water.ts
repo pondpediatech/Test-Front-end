@@ -19,7 +19,7 @@ export const water = async (req: NextApiRequest, res: NextApiResponse) => {
   const table = bigquery.dataset(datasetId).table(tableId);
   const allData = req.query.allData === 'true';
 
-  const query = `SELECT created_date, water_pH, tds, water_temp, turb, dox FROM \`${datasetId}.${tableId}\` LIMIT 100`;
+  const query = `SELECT created_date, water_pH, tds, water_temp, turb, dox FROM \`${datasetId}.${tableId}\` LIMIT 30`;
   
   // let query = '';
   // if (allData) {
