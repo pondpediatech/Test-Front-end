@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { Metadata } from "next";
-import React, { useCallback, useRef, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useForm } from 'react-hook-form'
-import { useAuth } from '../../_providers/Auth'
+import React, { useCallback, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { useAuth } from "../../_providers/Auth";
 
 export const metadata: Metadata = {
   title: "PondPedia | Sign Up",
@@ -36,48 +36,59 @@ const SignupPage: React.FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     watch,
-  } = useForm<FormData>()
+  } = useForm<FormData>();
 
-  const password = useRef({})
-  password.current = watch('password', '')
+  const password = useRef({});
+  password.current = watch("password", "");
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/create`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/create`,
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      })
+      );
 
       if (!response.ok) {
-        const messageResponse = await response.json()
-        const message = messageResponse.message || 'There was an error creating the account.'
-        setError(message)
-        return
+        const messageResponse = await response.json();
+        const message =
+          messageResponse.message || "There was an error creating the account.";
+        setError(message);
+        return;
       }
 
-      const redirect = searchParams.get('redirect')
+      const redirect = searchParams.get("redirect");
 
       const timer = setTimeout(() => {
-        setLoading(true)
-      }, 1000)
+        setLoading(true);
+      }, 1000);
 
       try {
-        await login(data)
-        clearTimeout(timer)
-        if (redirect) router.push(redirect as string)
-        else router.push(`/account?success=${encodeURIComponent('Account created successfully')}`)
+        await login(data);
+        clearTimeout(timer);
+        if (redirect) router.push(redirect as string);
+        else
+          router.push(
+            `/account?success=${encodeURIComponent(
+              "Account created successfully",
+            )}`,
+          );
       } catch (_) {
-        clearTimeout(timer)
-        setError('There was an error with the credentials provided. Please try again.')
+        clearTimeout(timer);
+        setError(
+          "There was an error with the credentials provided. Please try again.",
+        );
       }
     },
     [login, router, searchParams],
-  )
+  );
 
   return (
     <>
@@ -85,14 +96,14 @@ const SignupPage: React.FC = () => {
         <div className="container">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
-              <div className="mx-auto max-w-[500px] rounded bg-white px-6 py-10 shadow-three dark:bg-dark sm:p-[60px]">
+              <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
                 <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
                   Create your account
                 </h3>
                 <p className="mb-11 text-center text-base font-medium text-body-color">
                   It’s totally free and super easy
                 </p>
-                <button className="mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
+                <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
                   <span className="mr-3">
                     <svg
                       width="20"
@@ -129,74 +140,62 @@ const SignupPage: React.FC = () => {
                   Sign in with Google
                 </button>
 
-                <button className="mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
+                <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
                   <span className="mr-3">
                     <svg
-                      fill="currentColor"
-                      width="22"
-                      height="22"
-                      viewBox="0 0 64 64"
                       xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      width="28"
+                      height="28"
+                      viewBox="0 0 48 48"
                     >
-                      <path d="M32 1.7998C15 1.7998 1 15.5998 1 32.7998C1 46.3998 9.9 57.9998 22.3 62.1998C23.9 62.4998 24.4 61.4998 24.4 60.7998C24.4 60.0998 24.4 58.0998 24.3 55.3998C15.7 57.3998 13.9 51.1998 13.9 51.1998C12.5 47.6998 10.4 46.6998 10.4 46.6998C7.6 44.6998 10.5 44.6998 10.5 44.6998C13.6 44.7998 15.3 47.8998 15.3 47.8998C18 52.6998 22.6 51.2998 24.3 50.3998C24.6 48.3998 25.4 46.9998 26.3 46.1998C19.5 45.4998 12.2 42.7998 12.2 30.9998C12.2 27.5998 13.5 24.8998 15.4 22.7998C15.1 22.0998 14 18.8998 15.7 14.5998C15.7 14.5998 18.4 13.7998 24.3 17.7998C26.8 17.0998 29.4 16.6998 32.1 16.6998C34.8 16.6998 37.5 16.9998 39.9 17.7998C45.8 13.8998 48.4 14.5998 48.4 14.5998C50.1 18.7998 49.1 22.0998 48.7 22.7998C50.7 24.8998 51.9 27.6998 51.9 30.9998C51.9 42.7998 44.6 45.4998 37.8 46.1998C38.9 47.1998 39.9 49.1998 39.9 51.9998C39.9 56.1998 39.8 59.4998 39.8 60.4998C39.8 61.2998 40.4 62.1998 41.9 61.8998C54.1 57.7998 63 46.2998 63 32.5998C62.9 15.5998 49 1.7998 32 1.7998Z" />
+                      <path
+                        fill="#039be5"
+                        d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"
+                      ></path>
+                      <path
+                        fill="#fff"
+                        d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"
+                      ></path>
                     </svg>
                   </span>
-                  Sign in with Github
+                  Sign in with Facebook
                 </button>
                 <div className="mb-8 flex items-center justify-center">
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
-                  <p className="w-full px-5 text-center text-base font-medium text-body-color">
-                    Or, register with your email
-                  </p>
+                  {error ? (
+                    <span className="text-sm text-red-500">
+                      <p className="w-full px-5 text-center text-base font-medium text-red-500">
+                        {error}
+                      </p>
+                    </span>
+                  ) : (
+                    <span className="text-sm text-red-500">
+                      <p className="w-full px-5 text-center text-base font-medium text-body-color">
+                        Or, register with your email
+                      </p>
+                    </span>
+                  )}
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="mb-8">
                     <label
-                      htmlFor="name"
+                      htmlFor="username"
                       className="mb-3 block text-sm text-dark dark:text-white"
                     >
                       {" "}
-                      Full Name{" "}
+                      Username{"* "}
                     </label>
                     <input
                       type="text"
-                      {...register('username')}
-                      name="name"
-                      placeholder="Enter your full name"
-                      className="w-full rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
-                    />
-                  </div>
-                  <div className="mb-8">
-                    <label
-                      htmlFor="username"
-                      className="mb-3 block text-sm text-dark dark:text-white"
-                      >
-                      {" "}
-                      Username{" "}
-                    </label>
-                    <input
-                      type="text"
-                      {...register('username', { required: true })}
+                      {...register("username", { required: true })}
                       name="username"
                       placeholder="Enter your username"
-                      className="w-full rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
-                    />
-                  </div>
-                  <div className="mb-8">
-                    <label
-                      htmlFor="username"
-                      className="mb-3 block text-sm text-dark dark:text-white"
-                      >
-                      {" "}
-                      Phone Number{" "}
-                    </label>
-                    <input
-                      type="text"
-                      {...register('phone_number', { required: true })}
-                      name="phone_number"
-                      placeholder="Enter your phone number"
-                      className="w-full rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
+                      className={`dark:shadow-two w-full rounded-sm border-2 border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:border-primary dark:focus:shadow-none ${
+                        errors.username ? "border-red-1000" : ""
+                      }`}
                     />
                   </div>
                   <div className="mb-8">
@@ -205,14 +204,34 @@ const SignupPage: React.FC = () => {
                       className="mb-3 block text-sm text-dark dark:text-white"
                     >
                       {" "}
-                      Email{" "}
+                      Email{"* "}
                     </label>
                     <input
                       type="email"
-                      {...register('email', { required: true })}
+                      {...register("email", { required: true })}
                       name="email"
                       placeholder="Enter your Email"
-                      className="w-full rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
+                      className={`dark:shadow-two w-full rounded-sm border-2 border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:border-primary dark:focus:shadow-none ${
+                        errors.email ? "border-red-1000" : ""
+                      }`}
+                    />
+                  </div>
+                  <div className="mb-8">
+                    <label
+                      htmlFor="phone_number"
+                      className="mb-3 block text-sm text-dark dark:text-white"
+                    >
+                      {" "}
+                      Phone Number{"* "}
+                    </label>
+                    <input
+                      type="text"
+                      {...register("phone_number", { required: true })}
+                      name="phone_number"
+                      placeholder="Enter your phone number"
+                      className={`dark:shadow-two w-full rounded-sm border-2 border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:border-primary dark:focus:shadow-none ${
+                        errors.phone_number ? "border-red-1000" : ""
+                      }`}
                     />
                   </div>
                   <div className="mb-8">
@@ -221,30 +240,40 @@ const SignupPage: React.FC = () => {
                       className="mb-3 block text-sm text-dark dark:text-white"
                     >
                       {" "}
-                      Your Password{" "}
+                      Your Password{"* "}
                     </label>
                     <input
                       type="password"
-                      {...register('password', { required: true })}
+                      {...register("password", { required: true })}
                       name="password"
                       placeholder="Enter your Password"
-                      className="w-full rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
+                      className={`dark:shadow-two w-full rounded-sm border-2 border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:border-primary dark:focus:shadow-none ${
+                        errors.password ? "border-red-1000" : ""
+                      }`}
                     />
                   </div>
                   <div className="mb-8">
                     <label
-                      htmlFor="password"
+                      htmlFor="passwordConfirm"
                       className="mb-3 block text-sm text-dark dark:text-white"
                     >
                       {" "}
-                      Confirm Password{" "}
+                      Confirm Password{"* "}
                     </label>
                     <input
                       type="password"
-                      {...register('passwordConfirm', { required: true, validate: (value) => value === password.current } || 'Passwords do not match') }
+                      {...register(
+                        "passwordConfirm",
+                        {
+                          required: true,
+                          validate: (value) => value === password.current,
+                        } || "Passwords do not match",
+                      )}
                       name="passwordConfirm"
                       placeholder="Confirm Password"
-                      className="w-full rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:shadow-two dark:focus:border-primary dark:focus:shadow-none"
+                      className={`dark:shadow-two w-full rounded-sm border-2 border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 focus:border-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:focus:border-primary dark:focus:shadow-none ${
+                        errors.passwordConfirm ? "border-red-1000" : ""
+                      }`}
                     />
                   </div>
                   <div className="mb-8 flex">
@@ -292,14 +321,18 @@ const SignupPage: React.FC = () => {
                     </label>
                   </div>
                   <div className="mb-6">
-                    <button type="submit" className="flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white shadow-submit duration-300 hover:bg-primary/90 dark:shadow-submit-dark">
-                      Sign up
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="shadow-submit dark:shadow-submit-dark flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90"
+                    >
+                      {isSubmitting ? "Loading..." : "Sign Up"}
                     </button>
                   </div>
                 </form>
                 <p className="text-center text-base font-medium text-body-color">
-                  Already using Startup?{" "}
-                  <Link href="/signin" className="text-primary hover:underline">
+                  Sudah punya akun?{" "}
+                  <Link href="/login" className="text-primary hover:underline">
                     Sign in
                   </Link>
                 </p>

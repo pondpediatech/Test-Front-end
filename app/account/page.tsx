@@ -1,6 +1,7 @@
 import Water from "@/components/Dashboard/Water";
 import { Metadata } from "next";
 import { getMeUser } from "../_utilities/getMeUser";
+import Modal from '@/components/Modal'
 
 export const metadata: Metadata = {
   title: "PondPedia | Account",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  await getMeUser({
+  const bruh = await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       "You must be logged in to access your account.",
     )}&redirect=${encodeURIComponent("/account")}`,
@@ -18,6 +19,7 @@ export default async function Home() {
   return (
     <>
       <Water/>
+      {bruh.showModal && <Modal />}
     </>
   );
 }
