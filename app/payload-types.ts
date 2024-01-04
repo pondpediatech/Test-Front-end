@@ -21,6 +21,8 @@ export interface User {
   name?: string | null;
   username: string;
   phone_number: string;
+  profile_picture?: string | null;
+  uses_social_login: boolean;
   occupation?: string | null;
   roles?: ('admin' | 'user')[] | null;
   updatedAt: string;

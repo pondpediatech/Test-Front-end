@@ -1,14 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import React, { useCallback, useRef } from "react";
+import { Metadata } from "next";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../_providers/Auth";
 import { useRouter, useSearchParams } from "next/navigation";
+import { auth, googleProvider, signInWithEmailAndPassword, signInWithPopup } from "../../../payload/utilities/firebase";
+
 // import { Input } from '../../../components/Input'
-
-import Link from "next/link";
-
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "PondPedia | Sign In",
@@ -40,15 +40,28 @@ const SigninPage: React.FC = () => {
   const onSubmit = useCallback(
     async (data: FormData) => {
       try {
+        const firebaseAuth = await signInWithEmailAndPassword(auth, data.email, data.password);
+
+        console.log(firebaseAuth);
+
+        if (!firebaseAuth.user.emailVerified) {
+          setError("Email belum terverifikasi, silahkan cek email anda");
+          return;
+        }
+
         await login(data);
         if (redirect?.current) router.push(redirect.current as string);
         else router.push("/account");
       } catch (_) {
-        setError("Incorrect Credentials");
+        setError("Email atau password salah");
       }
     },
     [login, router],
   );
+
+  // const onSubmitGoogle = useCallback(
+  //   signInWithPopup(auth, googleProvider),
+  // )
 
   return (
     <>

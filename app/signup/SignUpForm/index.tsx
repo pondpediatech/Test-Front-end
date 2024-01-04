@@ -6,6 +6,13 @@ import React, { useCallback, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../_providers/Auth";
+import {
+  auth,
+  googleProvider,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  sendEmailVerification
+} from "../../../payload/utilities/firebase";
 
 export const metadata: Metadata = {
   title: "PondPedia | Sign Up",
@@ -32,6 +39,7 @@ const SignupPage: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [warning, setWarning] = useState<string | null>(null);
 
   const {
     register,
@@ -45,50 +53,81 @@ const SignupPage: React.FC = () => {
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/create`,
-        {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
+      let firebaseAuth;
+      try {
+        firebaseAuth = await createUserWithEmailAndPassword(
+          auth,
+          data.email,
+          data.password,
+        );
+        console.log(firebaseAuth);
+   
+        // Send email verification
+        try {
+          sendEmailVerification(auth.currentUser!)
 
-      if (!response.ok) {
-        const messageResponse = await response.json();
-        const message =
-          messageResponse.message || "There was an error creating the account.";
-        setError(message);
+          // Display warning message
+          const timer = setTimeout(() => {
+            setWarning('Silahkan cek email anda untuk verifikasi akun');
+            setLoading(true);
+          }, 1000);
+        } catch (error) {
+          console.error('Failed to send email verification', error);
+          setError('Failed to send email verification');
+          return;
+        }
+   
+      } catch (error) {
+        let errorMessage;
+        switch (error.code) {
+          case 'auth/email-already-in-use':
+            errorMessage = 'Email sudah digunakan';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'Email tidak valid';
+            break;         
+          case 'auth/weak-password':
+            errorMessage = 'Password terlalu lemah';
+            break;
+          default:
+            errorMessage = 'An unknown error occurred.';
+        }
+        setError(errorMessage);
         return;
       }
-
-      const redirect = searchParams.get("redirect");
-
-      const timer = setTimeout(() => {
-        setLoading(true);
-      }, 1000);
-
+   
       try {
-        await login(data);
-        clearTimeout(timer);
-        if (redirect) router.push(redirect as string);
-        else
-          router.push(
-            `/account?success=${encodeURIComponent(
-              "Account created successfully",
-            )}`,
-          );
-      } catch (_) {
-        clearTimeout(timer);
-        setError(
-          "There was an error with the credentials provided. Please try again.",
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/create`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              ...data,
+              id: firebaseAuth.user.uid,
+              uses_social_login: false,
+            }),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
         );
+   
+        if (!response.ok) {
+          const messageResponse = await response.json();
+          const message =
+            messageResponse.message ||
+            "There was an error creating the account.";
+          setError(message);
+          return;
+        }
+              
+        console.log(warning)
+      } catch (error) {
+        setError("Terdapat error yang terjadi.");
       }
     },
-    [login, router, searchParams],
-  );
+    [auth, login, setError],
+   );
 
   return (
     <>
@@ -98,10 +137,10 @@ const SignupPage: React.FC = () => {
             <div className="w-full px-4">
               <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
                 <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
-                  Create your account
+                  Buat akun anda!
                 </h3>
                 <p className="mb-11 text-center text-base font-medium text-body-color">
-                  It’s totally free and super easy
+                  Daftar melalui sosial media
                 </p>
                 <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
                   <span className="mr-3">
@@ -170,10 +209,16 @@ const SignupPage: React.FC = () => {
                         {error}
                       </p>
                     </span>
+                  ) : warning ? (
+                    <span className="text-sm text-yellow-500">
+                      <p className="w-full px-5 text-center text-base font-medium text-yellow-500">
+                        {warning}
+                      </p>
+                    </span>
                   ) : (
                     <span className="text-sm text-red-500">
                       <p className="w-full px-5 text-center text-base font-medium text-body-color">
-                        Or, register with your email
+                        Atau, daftar melalui email
                       </p>
                     </span>
                   )}

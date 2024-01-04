@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { v4 as uuidv4 } from "uuid";
 import { getPayloadClient } from "@/payload/payloadClient";
 import { openai, config } from "@/payload/utilities/openai";
 import { Assistant } from "../../../app/payload-types";
@@ -13,7 +12,7 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ResponseData>
 ) => {
-  const { name, email, occupation, username, phone_number, roles, password } =
+  const { id, name, email, occupation, username, phone_number, roles, password, uses_social_login } =
     req.body;
 
   const payload = await getPayloadClient();
@@ -30,7 +29,7 @@ const handler = async (
 
     if (existingUser.docs.length > 0) {
       return res.status(409).json({
-        message: "A user with the given email already exists.",
+        message: "Email sudah digunakan",
         assistant: null,
       });
     }
@@ -38,19 +37,20 @@ const handler = async (
     const user = await payload.create({
       collection: "users",
       data: {
-        id: uuidv4(),
+        id,
         name,
         email,
         occupation,
         username,
         password,
         phone_number,
+        uses_social_login,
         roles,
       },
     });
 
     const createAssistant = await openai.beta.assistants.create({
-      name: `Asisten ${name}`,
+      name: `Asisten ${username}`,
       instructions: config.instruction,
       model: config.model,
     });

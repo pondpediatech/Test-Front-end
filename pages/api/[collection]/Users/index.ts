@@ -47,6 +47,16 @@ const Users: CollectionConfig = {
       required: true,
     },
     {
+      name: 'profile_picture',
+      type: 'text',
+    },
+    {
+      name: 'uses_social_login',
+      type: 'checkbox',
+      defaultValue: false,
+      required: true,
+    },
+    {
       name: 'occupation',
       type: 'text',
     },

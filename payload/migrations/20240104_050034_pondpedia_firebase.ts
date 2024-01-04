@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"name" varchar,
 	"username" varchar NOT NULL,
 	"phone_number" varchar NOT NULL,
+	"profile_picture" varchar,
+	"uses_social_login" boolean NOT NULL,
 	"occupation" varchar,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,

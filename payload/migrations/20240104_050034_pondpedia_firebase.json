@@ -1,5 +1,5 @@
 {
-  "id": "56f17e9b-12cb-4e5b-8653-5786c6ab41b6",
+  "id": "f46e37ac-21bd-409c-a629-3f49d05ab0d2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -92,6 +92,18 @@
         "phone_number": {
           "name": "phone_number",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "profile_picture": {
+          "name": "profile_picture",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uses_social_login": {
+          "name": "uses_social_login",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true
         },

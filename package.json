@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=payload/payload.config.ts payload",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=payload/payload.config.ts payload generate:types",
     "lint:fix": "eslint --fix"
   },
@@ -17,6 +18,7 @@
     "chart.js": "^4.4.1",
     "cross-env": "^7.0.3",
     "encoding": "^0.1.13",
+    "firebase": "^10.7.1",
     "next": "13.5",
     "next-themes": "^0.2.1",
     "node-fetch": "^3.3.2",
