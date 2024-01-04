@@ -51,7 +51,7 @@ const SigninPage: React.FC = () => {
 
         await login(data);
         if (redirect?.current) router.push(redirect.current as string);
-        else router.push("/account");
+        else router.push("/users");
       } catch (_) {
         setError("Email atau password salah");
       }
@@ -71,10 +71,10 @@ const SigninPage: React.FC = () => {
             <div className="w-full px-4">
               <div className="shadow-three mx-auto max-w-[500px] rounded bg-white px-6 py-10 dark:bg-dark sm:p-[60px]">
                 <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
-                  Sign in to your account
+                  Login akun
                 </h3>
                 <p className="mb-11 text-center text-base font-medium text-body-color">
-                  Login to your account to use the services.
+                  Silahkan login terlebih dahulu untuk masuk
                 </p>
                 <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
                   <span className="mr-3">
@@ -241,7 +241,7 @@ const SigninPage: React.FC = () => {
                   </div>
                 </form>
                 <p className="text-center text-base font-medium text-body-color">
-                  Don’t you have an account?{" "}
+                  Belum punya akun??{" "}
                   <Link href="/signup" className="text-primary hover:underline">
                     Sign up
                   </Link>

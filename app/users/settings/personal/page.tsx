@@ -1,16 +1,16 @@
 import React from 'react'
 
-import { getMeUser } from '../../_utilities/getMeUser'
-import SettingPage from './SettingPage'
+import { getMeUser } from '../../../_utilities/getMeUser'
+import PersonalPage from './PersonalPage'
 
 export default async function Login() {
   await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access your account.',
-    )}&redirect=${encodeURIComponent('/account')}`,
+    )}&redirect=${encodeURIComponent('/users')}`,
   })
 
   return (
-    <SettingPage />
+    <PersonalPage />
   )
 }

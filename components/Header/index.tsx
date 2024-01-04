@@ -44,7 +44,7 @@ const Header = () => {
 
   return (
     <>
-      {usePathName?.includes("/account") || usePathName?.includes("/admin") ? (
+      {usePathName?.includes("/users") || usePathName?.includes("/admin") ? (
         <div></div>
       ) : (
         <header
@@ -183,9 +183,9 @@ const Header = () => {
                         <>
                           <li className="group relative lg:hidden">
                             <Link
-                              href={"./account"}
+                              href={"./users"}
                               className={`flex py-2 text-base lg:mr-0 lg:inline-flex lg:px-0 lg:py-6 ${
-                                usePathName === "./account"
+                                usePathName === "./users"
                                   ? "text-primary dark:text-white"
                                   : "text-dark hover:text-primary dark:text-white/70 dark:hover:text-white"
                               }`}

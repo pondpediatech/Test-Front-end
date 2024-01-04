@@ -5,7 +5,7 @@ import SignupPage from './SignUpForm'
 
 export default async function CreateAccount() {
   await getMeUser({
-    validUserRedirect: `/account?message=${encodeURIComponent(
+    validUserRedirect: `/users?message=${encodeURIComponent(
       'Cannot create a new account while logged in, please log out and try again.',
     )}`,
   })

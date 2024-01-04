@@ -4,7 +4,7 @@ import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../../_providers/Auth";
+import { useAuth } from "../../../../_providers/Auth";
 import { useForm } from "react-hook-form";
 
 import { Metadata } from "next";
@@ -56,7 +56,7 @@ const Settings: React.FC = () => {
         if (response.ok) {
           const json = await response.json();
           setUser(json.doc);
-          setSuccess("Biodata berhasil diperbarui");
+          setSuccess("Akun berhasil diperbarui!");
           setError("");
           reset({
             name: json.doc.name,
@@ -88,20 +88,20 @@ const Settings: React.FC = () => {
         email: user.email,
       })
     }
-  }, [user, router, reset, changePassword])
+  }, [user, router, reset])
 
 
   return (
     <>
       <div className="mx-auto max-w-270">
-        <Breadcrumb pageName="Settings" />
+        <Breadcrumb pageName="Pengaturan" />
 
         <div className="grid grid-cols-5 gap-8">
           <div className="col-span-5 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
                 <h3 className="font-medium text-black dark:text-white">
-                  Personal Information
+                  Pengaturan Akun 
                 </h3>
               </div>
               <div className="p-7">

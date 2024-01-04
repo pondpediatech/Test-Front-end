@@ -11,6 +11,9 @@ import {
   updateProfile,
   sendEmailVerification,
   sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
+  updatePhoneNumber,
 } from "firebase/auth";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -39,4 +42,7 @@ export {
   updateProfile,
   sendEmailVerification,
   sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
+  updatePhoneNumber,
 };
