@@ -2,20 +2,13 @@
 
 import Link from "next/link";
 import { Metadata } from "next";
+
 import React, { useCallback, useRef, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../_providers/Auth";
-import {
-  auth,
-  googleProvider,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  sendEmailVerification
-} from "../../../payload/utilities/firebase";
 
 export const metadata: Metadata = {
-  title: "PondPedia | Sign Up",
+  title: "PondPedia | Registrasi akun",
   description: "This is Sign Up Page for PondPedia",
   // other metadata
 };
@@ -31,12 +24,7 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
-  const searchParams = useSearchParams()!;
-  const allParams = searchParams.toString()
-    ? `?${searchParams.toString()}`
-    : "";
   const { login } = useAuth();
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
@@ -53,81 +41,47 @@ const SignupPage: React.FC = () => {
 
   const onSubmit = useCallback(
     async (data: FormData) => {
-      let firebaseAuth;
-      try {
-        firebaseAuth = await createUserWithEmailAndPassword(
-          auth,
-          data.email,
-          data.password,
-        );
-        console.log(firebaseAuth);
-   
-        // Send email verification
-        try {
-          sendEmailVerification(auth.currentUser!)
-
-          // Display warning message
-          const timer = setTimeout(() => {
-            setWarning('Silahkan cek email anda untuk verifikasi akun');
-            setLoading(true);
-          }, 1000);
-        } catch (error) {
-          console.error('Failed to send email verification', error);
-          setError('Failed to send email verification');
-          return;
-        }
-   
-      } catch (error) {
-        let errorMessage;
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            errorMessage = 'Email sudah digunakan';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Email tidak valid';
-            break;         
-          case 'auth/weak-password':
-            errorMessage = 'Password terlalu lemah';
-            break;
-          default:
-            errorMessage = 'An unknown error occurred.';
-        }
-        setError(errorMessage);
-        return;
-      }
-   
+      const requestOptions = {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+  
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/create`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              ...data,
-              id: firebaseAuth.user.uid,
-              uses_social_login: false,
-            }),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
+          requestOptions
         );
-   
+  
+        const messageResponse = await response.json();
+        const message = messageResponse.message;
+  
         if (!response.ok) {
-          const messageResponse = await response.json();
-          const message =
-            messageResponse.message ||
-            "There was an error creating the account.";
           setError(message);
+  
+          setTimeout(() => {
+            setError("");
+            setLoading(true);
+          }, 1000);
+  
           return;
+        } else {
+          setWarning(message);
+  
+          setTimeout(() => {
+            setWarning("");
+            setLoading(true);
+          }, 1000);
         }
-              
-        console.log(warning)
+  
       } catch (error) {
-        setError("Terdapat error yang terjadi.");
+        setError(error);
       }
     },
-    [auth, login, setError],
-   );
+    [login, setError, setWarning],
+  );
 
   return (
     <>
@@ -139,7 +93,7 @@ const SignupPage: React.FC = () => {
                 <h3 className="mb-3 text-center text-2xl font-bold text-black dark:text-white sm:text-3xl">
                   Buat akun anda!
                 </h3>
-                <p className="mb-11 text-center text-base font-medium text-body-color">
+                {/* <p className="mb-11 text-center text-base font-medium text-body-color">
                   Daftar melalui sosial media
                 </p>
                 <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
@@ -200,7 +154,7 @@ const SignupPage: React.FC = () => {
                     </svg>
                   </span>
                   Sign in with Facebook
-                </button>
+                </button> */}
                 <div className="mb-8 flex items-center justify-center">
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
                   {error ? (
@@ -210,15 +164,15 @@ const SignupPage: React.FC = () => {
                       </p>
                     </span>
                   ) : warning ? (
-                    <span className="text-sm text-yellow-500">
-                      <p className="w-full px-5 text-center text-base font-medium text-yellow-500">
+                    <span className="text-yellow-500 text-sm">
+                      <p className="text-yellow-500 w-full px-5 text-center text-base font-medium">
                         {warning}
                       </p>
                     </span>
                   ) : (
                     <span className="text-sm text-red-500">
                       <p className="w-full px-5 text-center text-base font-medium text-body-color">
-                        Atau, daftar melalui email
+                        Registrasi melalui email
                       </p>
                     </span>
                   )}

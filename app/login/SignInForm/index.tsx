@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../_providers/Auth";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth, googleProvider, signInWithEmailAndPassword, signInWithPopup } from "../../../payload/utilities/firebase";
+import { auth, googleProvider, signInWithEmailAndPassword, signInWithPopup } from "../../../payload/utilities/firebase-config";
 
 // import { Input } from '../../../components/Input'
 
@@ -76,7 +76,7 @@ const SigninPage: React.FC = () => {
                 <p className="mb-11 text-center text-base font-medium text-body-color">
                   Silahkan login terlebih dahulu untuk masuk
                 </p>
-                <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
+                {/* <button className="dark:shadow-two mb-6 flex w-full items-center justify-center rounded-sm border border-stroke bg-[#f8f8f8] px-6 py-3 text-base text-body-color outline-none transition-all duration-300 hover:border-primary hover:bg-primary/5 hover:text-primary dark:border-transparent dark:bg-[#2C303B] dark:text-body-color-dark dark:hover:border-primary dark:hover:bg-primary/5 dark:hover:text-primary dark:hover:shadow-none">
                   <span className="mr-3">
                     <svg
                       width="20"
@@ -134,7 +134,7 @@ const SigninPage: React.FC = () => {
                     </svg>
                   </span>
                   Sign in with Facebook
-                </button>
+                </button> */}
                 <div className="mb-8 flex items-center justify-center">
                   <span className="hidden h-[1px] w-full max-w-[70px] bg-body-color/50 sm:block"></span>
                   {error ? (
@@ -146,7 +146,7 @@ const SigninPage: React.FC = () => {
                   ) : (
                     <span className="text-sm text-red-500">
                       <p className="w-full px-5 text-center text-base font-medium text-body-color">
-                        Or, sign in with your email
+                        Masuk dengan email
                       </p>
                     </span>
                   )}

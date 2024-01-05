@@ -3,18 +3,24 @@ import { getPayloadClient } from "@/payload/payloadClient";
 import { openai, config } from "@/payload/utilities/openai";
 import { Assistant } from "../../../app/payload-types";
 
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updatePhoneNumber,
+} from "../../../payload/utilities/firebase-config";
+
 type ResponseData = {
   message: string;
-  assistant: Assistant | null;
+  user: Assistant | null;
 };
 
 const handler = async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<ResponseData>,
 ) => {
-  const { id, name, email, occupation, username, phone_number, roles, password, uses_social_login } =
-    req.body;
-
+  let firebaseAuth;
+  const { name, email, occupation, username, phone_number, password } = req.body;
   const payload = await getPayloadClient();
 
   try {
@@ -30,22 +36,24 @@ const handler = async (
     if (existingUser.docs.length > 0) {
       return res.status(409).json({
         message: "Email sudah digunakan",
-        assistant: null,
+        user: null,
       });
     }
+
+    firebaseAuth = await createUserWithEmailAndPassword(auth, email, password);
+    
 
     const user = await payload.create({
       collection: "users",
       data: {
-        id,
+        id: firebaseAuth.user.uid,
         name,
         email,
         occupation,
         username,
         password,
         phone_number,
-        uses_social_login,
-        roles,
+        uses_social_login: false,
       },
     });
 
@@ -67,14 +75,35 @@ const handler = async (
       },
     });
 
-    res.status(201).json({
-      message: "Assistant created successfully",
-      assistant: assistant,
+    sendEmailVerification(auth.currentUser!)
+
+    return res.status(201).json({
+      message:
+        "Berhasil membuat akun. Silahkan cek email anda untuk verifikasi akun",
+      user: assistant,
     });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    payload.logger.error(message)
-    res.json({ message, assistant: null });
+
+  } catch (error) {
+    console.log(error)
+    let message = "";
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        message = "Email sudah digunakan";
+        break;
+      case "auth/invalid-email":
+        message = "Email tidak valid";
+        break;
+      case "auth/weak-password":
+        message = "Password terlalu lemah";
+        break;
+      default:
+        message = error instanceof Error ? error.message : "Unknown error";
+    }
+
+    console.log(message)
+
+    payload.logger.error(message);
+    res.json({ message, user: null });
   }
 };
 
