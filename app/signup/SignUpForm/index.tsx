@@ -61,19 +61,19 @@ const SignupPage: React.FC = () => {
         if (!response.ok) {
           setError(message);
   
-          setTimeout(() => {
-            setError("");
-            setLoading(true);
-          }, 1000);
+          // setTimeout(() => {
+          //   setError("");
+          //   setLoading(true);
+          // }, 1000);
   
           return;
         } else {
           setWarning(message);
   
-          setTimeout(() => {
-            setWarning("");
-            setLoading(true);
-          }, 1000);
+          // setTimeout(() => {
+          //   setWarning("");
+          //   setLoading(true);
+          // }, 1000);
         }
   
       } catch (error) {

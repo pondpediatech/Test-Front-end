@@ -5,6 +5,7 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import { User } from '../../payload-types'
 import { gql, USER } from './gql'
 import { rest } from './rest'
+import { getAuth, signOut } from "firebase/auth";
 import { AuthContext, Create, ForgotPassword, Login, Logout, ResetPassword } from './types'
 
 const Context = createContext({} as AuthContext)
@@ -66,6 +67,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode; api?: 'rest' | 
   const logout = useCallback<Logout>(async () => {
     if (api === 'rest') {
       await rest(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/logout`)
+      await signOut(getAuth())
+      console.log('i am out!')
       setUser(null)
       return
     }

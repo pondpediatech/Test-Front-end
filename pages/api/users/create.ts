@@ -7,7 +7,6 @@ import {
   auth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
-  updatePhoneNumber,
 } from "../../../payload/utilities/firebase-config";
 
 type ResponseData = {
@@ -41,7 +40,6 @@ const handler = async (
     }
 
     firebaseAuth = await createUserWithEmailAndPassword(auth, email, password);
-    
 
     const user = await payload.create({
       collection: "users",
