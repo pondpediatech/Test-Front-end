@@ -3,6 +3,14 @@ import React from 'react'
 import { getMeUser } from '../../../_utilities/getMeUser'
 import AccountPage from './AccountPage'
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Pengaturan | PondPedia",
+  description: "Halaman pengaturan profile PondPedia",
+  // other metadata
+};
+
 export default async function Login() {
   await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(

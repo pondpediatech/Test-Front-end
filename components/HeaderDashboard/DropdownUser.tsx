@@ -9,6 +9,7 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [name, setName] = useState('');
   const [occupation, setOccupation] = useState('');
+  const [profilePicture, setProfilePicture] = useState('');
   const { user } = useAuth();
 
   const trigger = useRef<any>(null);
@@ -48,8 +49,10 @@ const DropdownUser = () => {
 
     // Once user is loaded, reset form to have default values
     if (user) {
+      // setCurrentUser({...user});
       setName(user.name!);
       setOccupation(user.occupation!);
+      setProfilePicture(user.profile_picture!);
     }
   }, [user])
 
@@ -68,14 +71,13 @@ const DropdownUser = () => {
           <span className="block text-xs">{occupation}</span>
         </span>
 
-        <span className="h-12 w-12 rounded-full">
-          <Image
-            width={112}
-            height={112}
-            src={"/images/user/user-01.png"}
-            alt="User"
-          />
-        </span>
+        <Image
+          width={50}
+          height={50}
+          src={profilePicture || "/images/account.png"}
+          className="rounded-full"
+          alt="User"
+        />
 
         <svg
           className="hidden fill-current sm:block"

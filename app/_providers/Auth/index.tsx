@@ -68,7 +68,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode; api?: 'rest' | 
     if (api === 'rest') {
       await rest(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/logout`)
       await signOut(getAuth())
-      console.log('i am out!')
       setUser(null)
       return
     }

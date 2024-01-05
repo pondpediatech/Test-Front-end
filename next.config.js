@@ -4,7 +4,7 @@ const { withPayload } = require("@payloadcms/next-payload");
 
 const nextConfig = {
   images: {
-    domains: ["localhost"],
+    domains: ["firebasestorage.googleapis.com"],
     remotePatterns: [
       {
         protocol: "https",
