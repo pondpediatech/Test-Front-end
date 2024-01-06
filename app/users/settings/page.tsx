@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { getMeUser } from '../../_utilities/getMeUser'
-import ProfilePage from './profile/ProfilePage'
+import ProfilePage from './account/ProfilePage'
 
 export default async function Login() {
   await getMeUser({

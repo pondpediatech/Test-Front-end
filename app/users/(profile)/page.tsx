@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { getMeUser } from '../../../_utilities/getMeUser'
+import { getMeUser } from '../../_utilities/getMeUser'
 import ProfilePage from './ProfilePage'
 
 import { Metadata } from "next";

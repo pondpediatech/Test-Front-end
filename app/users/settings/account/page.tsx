@@ -1,13 +1,12 @@
 import React from 'react'
 
 import { getMeUser } from '../../../_utilities/getMeUser'
-import AccountPage from './AccountPage'
+import ProfilePage from './ProfilePage'
 
 import { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Pengaturan | PondPedia",
-  description: "Halaman pengaturan profile PondPedia",
+  description: "Halaman pengaturan profile",
   // other metadata
 };
 
@@ -19,6 +18,6 @@ export default async function Login() {
   })
 
   return (
-    <AccountPage />
+    <ProfilePage />
   )
 }
