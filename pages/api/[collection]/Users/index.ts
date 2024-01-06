@@ -61,6 +61,90 @@ const Users: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'education',
+      type: 'select',
+      options: [
+        {
+          label: 'Belum Memilih',
+          value: '',
+        },
+        {
+          label: 'Tidak/Belum Sekolah',
+          value: 'tidak-belum-sekolah',
+        },
+        {
+          label: 'Tidak Tamat SD/Sederajat',
+          value: 'tidak-tamat-sd-sederajat',
+        },
+        {
+          label: 'Tamat SD/Sederajat',
+          value: 'tamat-sd-sederajat',
+        },
+        {
+          label: 'SMP/Sederajat',
+          value: 'smp-sederajat',
+        },
+        {
+          label: 'SMA',
+          value: 'sma',
+        },
+        {
+          label: 'SMK',
+          value: 'smk',
+        },
+        {
+          label: 'Diploma I-III',
+          value: 'diploma_1_3',
+        },
+        {
+          label: 'Diploma IV/Strata I',
+          value: 'diploma_4_s1',
+        },
+        {
+          label: 'Strata II',
+          value: 'strata_2',
+        },
+        {
+          label: 'Strata III',
+          value: 'strata_3',
+        },
+      ],
+    },
+    {
+      name: 'gender',
+      type: 'select',
+      options: [
+        {
+          label: 'Belum Memilih',
+          value: '',
+        },
+        {
+          label: 'Laki-laki',
+          value: 'laki-laki',
+        },
+        {
+          label: 'Perempuan',
+          value: 'perempuan',
+        },
+        {
+          label: 'Memilih untuk tidak menyebutkan',
+          value: 'memilih_untuk_tidak_menyebutkan',
+        },
+      ],
+    },
+    {
+      name: 'birthdate',
+      type: 'date',
+    },
+    {
+      name: 'birthplace',
+      type: 'text',
+    },
+    {
+      name: 'bio',
+      type: 'text',
+    },
+    {
       name: 'roles',
       type: 'select',
       hasMany: true,

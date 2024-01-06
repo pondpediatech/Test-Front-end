@@ -55,15 +55,12 @@ const Header = (props: {
             </span>
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
-
-          <Link className="block flex-shrink-0 lg:hidden" href="/">
-            <Image
-              width={32}
-              height={32}
-              src={"/images/logo/logo-1.png"}
-              alt="PondPedia Logo"
-            />
-          </Link>
+          <Image
+            width={32}
+            height={32}
+            src={"/images/logo/logo-1.png"}
+            alt="PondPedia Logo"
+          />
         </div>
 
         <div className="hidden sm:block">

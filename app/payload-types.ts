@@ -24,6 +24,25 @@ export interface User {
   profile_picture?: string | null;
   uses_social_login: boolean;
   occupation?: string | null;
+  education?:
+    | (
+        | ''
+        | 'tidak-belum-sekolah'
+        | 'tidak-tamat-sd-sederajat'
+        | 'tamat-sd-sederajat'
+        | 'smp-sederajat'
+        | 'sma'
+        | 'smk'
+        | 'diploma_1_3'
+        | 'diploma_4_s1'
+        | 'strata_2'
+        | 'strata_3'
+      )
+    | null;
+  gender?: ('' | 'laki-laki' | 'perempuan' | 'memilih_untuk_tidak_menyebutkan') | null;
+  birthdate?: string | null;
+  birthplace?: string | null;
+  bio?: string | null;
   roles?: ('admin' | 'user')[] | null;
   updatedAt: string;
   createdAt: string;

@@ -10,29 +10,30 @@ import {
   auth,
   updateProfile,
 } from "../../../../../payload/utilities/firebase-config";
-import CheckboxFour from "@/components/Checkboxes/CheckboxFour";
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
-
-import { Metadata } from "next";
-export const metadata: Metadata = {
-  title: "Pengaturan | PondPedia",
-  description: "Halaman pengaturan profile",
-  // other metadata
-};
 
 type FormData = {
   name: string | undefined;
   username: string;
   profile_picture: string;
+  education: string | undefined;
+  gender: string | undefined;
+  phone_number: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  birthdate: string | undefined;
+  bio: string | undefined;
+  birthplace: string | undefined;
   occupation: string | undefined;
 };
 
 const ProfilePage: React.FC = () => {
-  const [success, setSuccess] = useState("");
-  const [successPicture, setSuccessPicture] = useState("");
-  const [error, setError] = useState("");
+  const [successProfile, setSuccessProfile] = useState("");
+  const [successDataPribadi, setSuccessDataPribadi] = useState("");
+  const [errorProfile, setErrorProfile] = useState("");
+  const [errorDataPribadi, setErrorDataPribadi] = useState("");
   const [selectedProfilePicture, setSelectedProfilePicture] = useState("");
-  const [errorPicture, setErrorPicture] = useState("");
   const { user, setUser } = useAuth();
   const router = useRouter();
 
@@ -67,14 +68,14 @@ const ProfilePage: React.FC = () => {
         if (response.ok) {
           const json = await response.json();
           setUser(json.doc);
-          setSuccess("Berhasil diperbarui!");
-          setError("");
+          setSuccessProfile("Berhasil diperbarui!");
+          setErrorProfile("");
           reset({
             name: json.doc.name,
             username: json.doc.username,
           });
         } else {
-          setError("Gagal diperbarui!");
+          setErrorProfile("Gagal diperbarui!");
         }
       }
     },
@@ -97,17 +98,23 @@ const ProfilePage: React.FC = () => {
           },
         );
 
+        console.log(data)
+
         if (response.ok) {
           const json = await response.json();
+          console.log(json.doc);
           setUser(json.doc);
-          setSuccess("Berhasil diperbarui!");
-          setError("");
+          setSuccessDataPribadi("Berhasil diperbarui!");
+          setErrorDataPribadi("");
           reset({
-            name: json.doc.name,
-            username: json.doc.username,
+            birthplace: json.doc.birthplace,
+            birthdate: json.doc.birthdate,
+            occupation: json.doc.occupation,
+            education: json.doc.education,
+            gender: json.doc.gender,
           });
         } else {
-          setError("Gagal diperbarui!");
+          setErrorDataPribadi("Gagal diperbarui!");
         }
       }
     },
@@ -125,6 +132,11 @@ const ProfilePage: React.FC = () => {
         name: user.name || undefined,
         username: user.username,
         profile_picture: user.profile_picture || undefined,
+        occupation: user.occupation || undefined,
+        birthplace: user.birthplace || undefined,
+        birthdate: user.birthdate || undefined,
+        education: user.education || undefined,
+        gender: user.gender || undefined,
       });
     }
   }, [user, router, reset]);
@@ -140,10 +152,10 @@ const ProfilePage: React.FC = () => {
               <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
                 <h3
                   className={`font-medium text-black dark:text-white ${
-                    success ? "text-green-500" : ""
-                  } ${error ? "text-red-500" : ""}`}
+                    successProfile ? "text-green-500" : ""
+                  } ${errorProfile ? "text-red-500" : ""}`}
                 >
-                  Profil Pengguna {success ? success : error}
+                  Profil Pengguna {successProfile ? successProfile : errorProfile}
                 </h3>
               </div>
               <div className="p-7">
@@ -256,8 +268,12 @@ const ProfilePage: React.FC = () => {
           <div className="col-span-6 xl:col-span-3">
             <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
-                <h3 className={`font-medium text-black dark:text-white`}>
-                  Data Pribadi
+                <h3
+                  className={`font-medium text-black dark:text-white ${
+                    successDataPribadi ? "text-green-500" : ""
+                  } ${errorDataPribadi ? "text-red-500" : ""}`}
+                >
+                  Data Pribadi {successDataPribadi ? successDataPribadi : errorDataPribadi}
                 </h3>
               </div>
               <div className="p-7">
@@ -304,13 +320,12 @@ const ProfilePage: React.FC = () => {
                         <input
                           className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                           type="text"
-                          name="birthplace"
+                          {...register("birthplace")}
                           id="birthplace"
-                          placeholder="Tempat"
+                          placeholder="Kota/Kabupaten"
                         />
                       </div>
                     </div>
-
                     <div className="w-full sm:w-1/2">
                       <label
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
@@ -321,6 +336,8 @@ const ProfilePage: React.FC = () => {
                       </label>
                       <input
                         type="date"
+                        {...register("birthdate")}
+                        id="birthdate"
                         className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                       />
                     </div>
@@ -402,8 +419,10 @@ const ProfilePage: React.FC = () => {
                           </g>
                         </svg>
                       </span>
-                      <select className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-12 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
-                        <option value="belum-memilih">Belum Memilih</option>
+                      <select {...register('education')} className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-12 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
+                        <option value="">
+                          Belum Memilih
+                        </option>
                         <option value="tidak-belum-sekolah">
                           Tidak/Belum Sekolah
                         </option>
@@ -413,9 +432,13 @@ const ProfilePage: React.FC = () => {
                         <option value="tamat-sd-sederajat">
                           Tamat SD/Sederajat
                         </option>
-                        <option value="smp">SMP/Sederajat</option>
+                        <option value="smp-sederajat">SMP/Sederajat</option>
                         <option value="sma">SMA</option>
                         <option value="smk">SMK</option>
+                        <option value="diploma_1_3">Diploma I-III</option>
+                        <option value="diploma_4_s1">Diploma IV/Strata I</option>
+                        <option value="strata_2">Strata II</option>
+                        <option value="strata_3">Strata III</option>
                       </select>
                       <span className="absolute right-4 top-1/2 z-10 -translate-y-1/2">
                         <svg
@@ -472,11 +495,13 @@ const ProfilePage: React.FC = () => {
                           </g>
                         </svg>
                       </span>
-                      <select className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-12 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
-                        <option value="belum-memilih">Belum Memilih</option>
+                      <select {...register('gender')}  className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-12 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input">
+                        <option value="">
+                          Belum Memilih
+                        </option>
                         <option value="laki-laki">Laki-laki</option>
                         <option value="perempuan">Perempuan</option>
-                        <option value="tidak-menyebutkan">
+                        <option value="memilih_untuk_tidak_menyebutkan">
                           Memilih untuk tidak menyebutkan
                         </option>
                       </select>
