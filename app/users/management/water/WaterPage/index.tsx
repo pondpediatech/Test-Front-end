@@ -1,7 +1,8 @@
+'use client'
 import React, { useRef } from "react";
-import ChartOne from "../../Charts/ChartOne";
-import CardDataStats from "../../CardDataStats";
-import useSWR from "swr";
+import ChartOne from "../../../../../components/Charts/ChartOne";
+import CardDataStats from "../../../../../components/CardDataStats";
+import useSWR from 'swr';
 
 interface SeriesData {
   ph: number;
@@ -30,7 +31,7 @@ export default function GetWater() {
     `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/water`,
     fetchAllWaterData,
     {
-      refreshInterval: 25000, // Fetch every 5 seconds
+      refreshInterval: 25000, // Fetch every 25 seconds
     },
   );
 

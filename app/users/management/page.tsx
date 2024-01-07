@@ -1,16 +1,14 @@
-import React from 'react'
-
+import React from "react";
+import Water from "./water/WaterPage";
 import { getMeUser } from '../../_utilities/getMeUser'
-import ProfilePage from './ProfilePage'
-
 import { Metadata } from "next";
+
 export const metadata: Metadata = {
-  title: "Pengaturan | PondPedia",
-  description: "Halaman pengaturan profile",
-  // other metadata
+  title: "Dashboard | PondPedia",
+  description: "Halaman Dashboard PondPedia",
 };
 
-export default async function Login() {
+export default async function Dashboard() {
   await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access your account.',
@@ -18,6 +16,8 @@ export default async function Login() {
   })
 
   return (
-    <ProfilePage />
-  )
-}
+    <>
+      <Water />
+    </>
+  );
+};

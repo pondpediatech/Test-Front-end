@@ -51,7 +51,7 @@ const SigninPage: React.FC = () => {
 
         await login(data);
         if (redirect?.current) router.push(redirect.current as string);
-        else router.push("/users");
+        else router.push("/users/management");
       } catch (_) {
         setError("Email atau password salah");
       }

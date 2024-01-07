@@ -1,4 +1,4 @@
-import Water from "@/components/Dashboard/Water";
+import Water from "@/app/users/management/page";
 import { Metadata } from "next";
 import { getMeUser } from "../_utilities/getMeUser";
 

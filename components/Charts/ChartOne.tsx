@@ -2,7 +2,7 @@
 import { ApexOptions } from "apexcharts";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { WaterData } from "../Dashboard/Water/getWater";
+import { WaterData } from "../../app/users/management/water/WaterPage";
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
 });
