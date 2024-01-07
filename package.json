@@ -15,6 +15,7 @@
     "@google-cloud/bigquery": "^7.3.0",
     "@payloadcms/db-postgres": "^0.2.2",
     "@payloadcms/next-payload": "^0.1.11",
+    "ai": "^2.2.31",
     "axios": "^1.6.4",
     "cross-env": "^7.0.3",
     "encoding": "^0.1.13",

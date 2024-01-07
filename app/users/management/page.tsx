@@ -1,12 +1,11 @@
 import React from "react";
-import Water from "./water/WaterPage";
 import { getMeUser } from '../../_utilities/getMeUser'
-import { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Dashboard | PondPedia",
-  description: "Halaman Dashboard PondPedia",
-};
+// import { Metadata } from "next";
+// export const metadata: Metadata = {
+//   title: "Dashboard | PondPedia",
+//   description: "Halaman Dashboard PondPedia",
+// };
 
 export default async function Dashboard() {
   await getMeUser({
@@ -15,9 +14,7 @@ export default async function Dashboard() {
     )}&redirect=${encodeURIComponent('/users')}`,
   })
 
-  return (
-    <>
-      <Water />
-    </>
-  );
+  await getMeUser({
+    validUserRedirect: "/users/management/water",
+  });
 };

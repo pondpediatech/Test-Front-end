@@ -1,24 +1,13 @@
-import React from 'react'
-
 import { getMeUser } from '../../_utilities/getMeUser'
-import { MessagesPage } from './messages/MessagePages'
 
-import { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Assistant | PondPedia",
-  description: "Halaman Asisten Virtual PondPedia",
-  // other metadata
-};
-
-export default async function Login() {
+export default async function Assistant() {
   await getMeUser({
     nullUserRedirect: `/login?error=${encodeURIComponent(
       'You must be logged in to access your account.',
     )}&redirect=${encodeURIComponent('/users')}`,
   })
 
-  return (
-    <MessagesPage />
-  )
+  await getMeUser({
+    validUserRedirect: "/users/assistants/messages",
+  });
 }

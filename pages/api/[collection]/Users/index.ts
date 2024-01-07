@@ -135,6 +135,11 @@ const Users: CollectionConfig = {
     {
       name: 'birthdate',
       type: 'date',
+      admin: {
+        date: {
+          displayFormat: 'yyyy-MM-dd',
+        }
+      }
     },
     {
       name: 'birthplace',
