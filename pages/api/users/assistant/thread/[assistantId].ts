@@ -18,6 +18,6 @@ const { query } = req;
         threads: thread,
       });
   } catch (error) {
-    payload.logger.error(error);
+    payload.logger.error("ASSISTANT", error);
   }
 }

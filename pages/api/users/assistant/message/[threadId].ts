@@ -103,32 +103,70 @@ export default async function handler(req: any, res: any) {
   const { userQuestion, assistantId } = req.body;
   const { threadId } = req.query;
 
-  try {
-    await openai.beta.threads.messages.create(threadId, {
-      role: "user",
-      content: userQuestion,
-    });
+  console.log(req.method)
 
-    const run = await openai.beta.threads.runs.create(threadId, {
-      assistant_id: assistantId,
-    });
+  switch (req.method) {
+    case "POST":
+      try {
+        await openai.beta.threads.messages.create(threadId, {
+          role: "user",
+          content: userQuestion,
+        });
 
-    runId = run.id;
+        const run = await openai.beta.threads.runs.create(threadId, {
+          assistant_id: assistantId,
+        });
 
-    await waitForMessageProcessing(threadId, runId);
+        runId = run.id;
 
-    const lastMessages = await getLastMessage(threadId, runId);
-    automaticNameForThread(threadId, userQuestion);
+        await waitForMessageProcessing(threadId, runId);
 
-    return res.status(200).json({
-      success: true,
-      data: {
-        lastUserMessage: lastMessages.lastUserMessage.content[0].text.value,
-        lastAssistantMessage: lastMessages.lastAssistantMessage.content[0].text.value,
-      },
-      message: "Message created successfully.",
-    });
-  } catch (error) {
-    payload.logger.error(error);
+        const lastMessages = await getLastMessage(threadId, runId);
+        automaticNameForThread(threadId, userQuestion);
+
+        return res.status(200).json({
+          success: true,
+          data: {
+            lastUserMessage: lastMessages.lastUserMessage.content[0].text.value,
+            lastAssistantMessage:
+              lastMessages.lastAssistantMessage.content[0].text.value,
+          },
+          message: "Message created successfully.",
+        });
+      } catch (error) {
+        payload.logger.error(error);
+      }
+    case "GET":
+      try {
+        const thread = await payload.find({
+            collection: "thread",
+            where: {
+              threadId: {
+                equals: threadId,
+              },
+            },
+          });
+
+        const threadMessages = await openai.beta.threads.messages.list(threadId);
+
+        return res.status(200).json({
+          success: true,
+          conversation: threadMessages.data.map((message) => {
+            return {
+              role: message.role,
+              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+            };
+          }),
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          data: { error: error.message },
+          message: "Error retrieving thread.",
+        });
+      }
+    default:
+      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

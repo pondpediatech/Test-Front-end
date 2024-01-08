@@ -25,6 +25,6 @@ export default async function handler(req: any, res: any) {
       assistantId,
     });
   } catch (error) {
-    payload.logger.error(error);
+    payload.logger.error("MESSAGE", error);
   }
 }
