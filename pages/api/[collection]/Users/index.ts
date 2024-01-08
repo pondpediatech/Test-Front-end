@@ -6,7 +6,6 @@ import adminsAndUser from './access/adminsAndUser'
 import { checkRole } from './checkRole'
 import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
 import { loginAfterCreate } from './hooks/loginAfterCreate'
-import { storeAssistantId } from './hooks/storeAssistantId'
 
 const Users: CollectionConfig = {
   slug: 'users',
@@ -23,12 +22,16 @@ const Users: CollectionConfig = {
   },
   hooks: {
     afterChange: [loginAfterCreate],
-    afterLogin: [storeAssistantId]
   },
   auth: true,
   fields: [
     {
       name: 'id',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'assistantId',
       type: 'text',
       required: true,
     },

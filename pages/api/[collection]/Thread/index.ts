@@ -1,16 +1,32 @@
 import type { CollectionConfig } from 'payload/types'
+import { admins } from '../access/admins'
+import { anyone } from '../access/anyone'
+import adminsAndUser from './access/adminsAndUser'
+import { checkRole } from './checkRole'
 
 const Thread: CollectionConfig = {
   slug: 'thread',
   admin: {
     useAsTitle: 'name',
   },
+  access: {
+    read: adminsAndUser,
+    create: adminsAndUser,
+    update: adminsAndUser,
+    delete: adminsAndUser,
+    admin: ({ req: { user } }) => checkRole(['admin'], user),
+  },
   fields: [
     {
-      name: 'assistant',
+      name: 'user',
       type: 'relationship',
-      relationTo: 'assistant',
+      relationTo: 'users',
       hasMany: true
+    },
+    {
+      name: 'assistantId',
+      type: 'text',
+      required: true
     },
     {
       name: 'threadId',

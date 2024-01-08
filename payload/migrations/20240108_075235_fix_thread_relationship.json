@@ -1,5 +1,5 @@
 {
-  "id": "dfae5caa-800a-47e6-a1e5-a93b255d5c1a",
+  "id": "efbe593c-4008-4475-b6ce-dbbd7b32cae9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -75,6 +75,12 @@
           "name": "id",
           "type": "varchar",
           "primaryKey": true,
+          "notNull": true
+        },
+        "assistant_id": {
+          "name": "assistant_id",
+          "type": "varchar",
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -220,8 +226,8 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "assistant": {
-      "name": "assistant",
+    "thread": {
+      "name": "thread",
       "schema": "",
       "columns": {
         "id": {
@@ -234,139 +240,6 @@
           "name": "assistant_id",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "created_at_idx": {
-          "name": "created_at_idx",
-          "columns": [
-            "created_at"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "assistant_rels": {
-      "name": "assistant_rels",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "order": {
-          "name": "order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "parent_id": {
-          "name": "parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "path": {
-          "name": "path",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "users_id": {
-          "name": "users_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "order_idx": {
-          "name": "order_idx",
-          "columns": [
-            "order"
-          ],
-          "isUnique": false
-        },
-        "parent_idx": {
-          "name": "parent_idx",
-          "columns": [
-            "parent_id"
-          ],
-          "isUnique": false
-        },
-        "path_idx": {
-          "name": "path_idx",
-          "columns": [
-            "path"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "assistant_rels_parent_id_assistant_id_fk": {
-          "name": "assistant_rels_parent_id_assistant_id_fk",
-          "tableFrom": "assistant_rels",
-          "tableTo": "assistant",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "assistant_rels_users_id_users_id_fk": {
-          "name": "assistant_rels_users_id_users_id_fk",
-          "tableFrom": "assistant_rels",
-          "tableTo": "users",
-          "columnsFrom": [
-            "users_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "thread": {
-      "name": "thread",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
           "notNull": true
         },
         "thread_id": {
@@ -437,9 +310,9 @@
           "primaryKey": false,
           "notNull": true
         },
-        "assistant_id": {
-          "name": "assistant_id",
-          "type": "integer",
+        "users_id": {
+          "name": "users_id",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
@@ -481,12 +354,12 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "thread_rels_assistant_id_assistant_id_fk": {
-          "name": "thread_rels_assistant_id_assistant_id_fk",
+        "thread_rels_users_id_users_id_fk": {
+          "name": "thread_rels_users_id_users_id_fk",
           "tableFrom": "thread_rels",
-          "tableTo": "assistant",
+          "tableTo": "users",
           "columnsFrom": [
-            "assistant_id"
+            "users_id"
           ],
           "columnsTo": [
             "id"

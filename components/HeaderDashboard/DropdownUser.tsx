@@ -54,7 +54,7 @@ const DropdownUser = () => {
       setOccupation(user.occupation!);
       setProfilePicture(user.profile_picture!);
     }
-  }, [user])
+  }, [router, user])
 
   return (
     <div className="relative">

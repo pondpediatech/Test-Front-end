@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getPayloadClient } from "@/payload/payloadClient";
 import { openai, config } from "@/payload/utilities/openai";
-import { Assistant } from "../../../app/payload-types";
 
 import {
   auth,
@@ -11,7 +10,7 @@ import {
 
 type ResponseData = {
   message: string;
-  user: Assistant | null;
+  user: Object;
 };
 
 const handler = async (
@@ -29,15 +28,24 @@ const handler = async (
         email: {
           equals: email,
         },
+        username: {
+          equals: username,
+        }
       },
     });
 
     if (existingUser.docs.length > 0) {
       return res.status(409).json({
-        message: "Email sudah digunakan",
-        user: null,
+        message: "Email atau username sudah digunakan",
+        user: {},
       });
     }
+
+    const createAssistant = await openai.beta.assistants.create({
+      name: `Asisten ${username}`,
+      instructions: config.instruction,
+      model: config.model,
+    });
 
     firebaseAuth = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -45,6 +53,7 @@ const handler = async (
       collection: "users",
       data: {
         id: firebaseAuth.user.uid,
+        assistantId: createAssistant.id,
         name,
         email,
         occupation,
@@ -55,34 +64,15 @@ const handler = async (
       },
     });
 
-    const createAssistant = await openai.beta.assistants.create({
-      name: `Asisten ${username}`,
-      instructions: config.instruction,
-      model: config.model,
-    });
-
-    // Store The Created Assistant
-    const assistantData = await createAssistant;
-
-    const assistant = await payload.create({
-      collection: "assistant",
-      data: {
-        user: user.id,
-        name: assistantData.name as string,
-        assistantId: assistantData.id,
-      },
-    });
-
     sendEmailVerification(auth.currentUser!)
 
     return res.status(201).json({
       message:
         "Berhasil membuat akun. Silahkan cek email anda untuk verifikasi akun",
-      user: assistant,
+      user,
     });
 
   } catch (error) {
-    console.log(error)
     let message = "";
     switch (error.code) {
       case "auth/email-already-in-use":
@@ -98,10 +88,8 @@ const handler = async (
         message = error instanceof Error ? error.message : "Unknown error";
     }
 
-    console.log(message)
-
     payload.logger.error(message);
-    res.json({ message, user: null });
+    res.json({ message, user: {} });
   }
 };
 

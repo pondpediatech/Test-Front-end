@@ -4,13 +4,12 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { slateEditor } from '@payloadcms/richtext-slate';
 import { webpackBundler } from '@payloadcms/bundler-webpack';
 import Users from '../pages/api/[collection]/Users';
-import Assistant from '../pages/api/[collection]/Assistant';
 import Thread from '../pages/api/[collection]/Thread';
 
 export default buildConfig({
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI,
+      connectionString: "postgresql://pondpediatech:postgresqlc18h27no3@127.0.0.1:5432/pondpedia_database",
     },
     migrationDir: path.resolve(__dirname, 'migrations'),
   }),
@@ -31,7 +30,6 @@ export default buildConfig({
   collections: [
     // Your collections here
     Users,
-    Assistant,
     Thread
   ],
   globals: [

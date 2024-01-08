@@ -5,6 +5,18 @@ export async function up({ payload }: MigrateUpArgs): Promise<void> {
 await payload.db.drizzle.execute(sql`
 
 DO $$ BEGIN
+ CREATE TYPE "enum_users_education" AS ENUM('', 'tidak-belum-sekolah', 'tidak-tamat-sd-sederajat', 'tamat-sd-sederajat', 'smp-sederajat', 'sma', 'smk', 'diploma_1_3', 'diploma_4_s1', 'strata_2', 'strata_3');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum_users_gender" AS ENUM('', 'laki-laki', 'perempuan', 'memilih_untuk_tidak_menyebutkan');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  CREATE TYPE "enum_users_roles" AS ENUM('admin', 'user');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -19,12 +31,18 @@ CREATE TABLE IF NOT EXISTS "users_roles" (
 
 CREATE TABLE IF NOT EXISTS "users" (
 	"id" varchar PRIMARY KEY NOT NULL,
+	"assistant_id" varchar NOT NULL,
 	"name" varchar,
 	"username" varchar NOT NULL,
 	"phone_number" varchar NOT NULL,
 	"profile_picture" varchar,
 	"uses_social_login" boolean NOT NULL,
 	"occupation" varchar,
+	"education" "enum_users_education",
+	"gender" "enum_users_gender",
+	"birthdate" timestamp(3) with time zone,
+	"birthplace" varchar,
+	"bio" varchar,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"email" varchar NOT NULL,
@@ -34,22 +52,6 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"hash" varchar,
 	"login_attempts" numeric,
 	"lock_until" timestamp(3) with time zone
-);
-
-CREATE TABLE IF NOT EXISTS "assistant" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"assistant_id" varchar NOT NULL,
-	"name" varchar NOT NULL,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "assistant_rels" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"order" integer,
-	"parent_id" integer NOT NULL,
-	"path" varchar NOT NULL,
-	"users_id" varchar
 );
 
 CREATE TABLE IF NOT EXISTS "thread" (
@@ -65,7 +67,7 @@ CREATE TABLE IF NOT EXISTS "thread_rels" (
 	"order" integer,
 	"parent_id" integer NOT NULL,
 	"path" varchar NOT NULL,
-	"assistant_id" integer
+	"users_id" varchar
 );
 
 CREATE TABLE IF NOT EXISTS "payload_preferences" (
@@ -96,10 +98,6 @@ CREATE INDEX IF NOT EXISTS "order_idx" ON "users_roles" ("order");
 CREATE INDEX IF NOT EXISTS "parent_idx" ON "users_roles" ("parent_id");
 CREATE INDEX IF NOT EXISTS "created_at_idx" ON "users" ("created_at");
 CREATE UNIQUE INDEX IF NOT EXISTS "email_idx" ON "users" ("email");
-CREATE INDEX IF NOT EXISTS "created_at_idx" ON "assistant" ("created_at");
-CREATE INDEX IF NOT EXISTS "order_idx" ON "assistant_rels" ("order");
-CREATE INDEX IF NOT EXISTS "parent_idx" ON "assistant_rels" ("parent_id");
-CREATE INDEX IF NOT EXISTS "path_idx" ON "assistant_rels" ("path");
 CREATE INDEX IF NOT EXISTS "created_at_idx" ON "thread" ("created_at");
 CREATE INDEX IF NOT EXISTS "order_idx" ON "thread_rels" ("order");
 CREATE INDEX IF NOT EXISTS "parent_idx" ON "thread_rels" ("parent_id");
@@ -116,25 +114,13 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "assistant_rels" ADD CONSTRAINT "assistant_rels_parent_id_assistant_id_fk" FOREIGN KEY ("parent_id") REFERENCES "assistant"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "assistant_rels" ADD CONSTRAINT "assistant_rels_users_id_users_id_fk" FOREIGN KEY ("users_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
  ALTER TABLE "thread_rels" ADD CONSTRAINT "thread_rels_parent_id_thread_id_fk" FOREIGN KEY ("parent_id") REFERENCES "thread"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "thread_rels" ADD CONSTRAINT "thread_rels_assistant_id_assistant_id_fk" FOREIGN KEY ("assistant_id") REFERENCES "assistant"("id") ON DELETE cascade ON UPDATE no action;
+ ALTER TABLE "thread_rels" ADD CONSTRAINT "thread_rels_users_id_users_id_fk" FOREIGN KEY ("users_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -159,8 +145,6 @@ await payload.db.drizzle.execute(sql`
 
 DROP TABLE "users_roles";
 DROP TABLE "users";
-DROP TABLE "assistant";
-DROP TABLE "assistant_rels";
 DROP TABLE "thread";
 DROP TABLE "thread_rels";
 DROP TABLE "payload_preferences";

@@ -7,12 +7,16 @@ const adminsAndUser: Access = ({ req: { user } }) => {
     if (checkRole(['admin'], user)) {
       return true
     }
+
     return {
-      id: {
+      user: {
         equals: user.id,
       },
     }
   }
+
+  console.log('help meeeeee',user)
+
 
   return false
 }

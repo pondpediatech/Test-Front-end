@@ -9,7 +9,6 @@
 export interface Config {
   collections: {
     users: User;
-    assistant: Assistant;
     thread: Thread;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -18,6 +17,7 @@ export interface Config {
 }
 export interface User {
   id: string;
+  assistantId: string;
   name?: string | null;
   username: string;
   phone_number: string;
@@ -55,17 +55,10 @@ export interface User {
   lockUntil?: string | null;
   password: string | null;
 }
-export interface Assistant {
-  id: number;
-  user?: (string | null) | User;
-  assistantId: string;
-  name: string;
-  updatedAt: string;
-  createdAt: string;
-}
 export interface Thread {
   id: number;
-  assistant?: (number | Assistant)[] | null;
+  user?: (string | User)[] | null;
+  assistantId: string;
   threadId: string;
   name: string;
   updatedAt: string;

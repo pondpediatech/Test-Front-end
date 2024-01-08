@@ -24,7 +24,7 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
-  const { login } = useAuth();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
@@ -80,7 +80,7 @@ const SignupPage: React.FC = () => {
         setError(error);
       }
     },
-    [login, setError, setWarning],
+    [setError, setWarning],
   );
 
   return (
