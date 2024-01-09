@@ -4,6 +4,8 @@ import { getPayloadClient } from "@/payload/payloadClient";
 export default async function handler(req: any, res: any) {
   const { assistantId, userId, username } = req.body;
 
+  console.log(req.body)
+
   const payload = await getPayloadClient();
   
   try {
@@ -26,5 +28,6 @@ export default async function handler(req: any, res: any) {
     });
   } catch (error) {
     payload.logger.error("MESSAGE", error);
+    console.log(error);
   }
 }

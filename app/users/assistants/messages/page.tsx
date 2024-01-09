@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { marked } from "marked";
 import useSWR from "swr";
 import { useAuth } from "../../../_providers/Auth";
+import "./page.css";
 
 const createThreadFetcher = (url: string, requestBody: any) => {
   return fetch(url, {
@@ -33,6 +34,12 @@ const createMessageFetcher = async (url, assistantId, userQuestion) => {
   return response.json();
 };
 
+const fetchThreads = async (url) => {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+};
+
 export default function MessagesPage() {
   const [newMessage, setNewMessage] = useState("");
   const [isCreatingThread, setIsCreatingThread] = useState(false);
@@ -49,73 +56,60 @@ export default function MessagesPage() {
     username: user?.username,
   };
 
-  // Logic For Creating A Thread
-  const { data: createThreadResult, mutate: createThread } = useSWR(
-    "/api/users/assistant/message",
-    () => createThreadFetcher("/api/users/assistant/message", requestBody),
-    {
-      onError: (error) => {
-        // Handle the error
-        console.error(error);
-      },
-    },
-  );
-
-  //   Logic for creating a thread for a specific assistant and user
-  const handleCreateThread = async () => {
+  const handleCreateThread = useCallback(async () => {
     setIsCreatingThread(true);
     try {
-      await createThread({
-        inputAssistantId: selectedAssistantId,
-        userId: user?.id,
+      const response = await fetch("/api/users/assistant/message", {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      // Handle the response
+      if (!response.ok) {
+        throw new Error("Failed to create thread");
+      }
+
+      // Continue with the rest of the logic
     } catch (error) {
       // Handle the error
+      console.error(error);
+    } finally {
+      setIsCreatingThread(false);
     }
-    setIsCreatingThread(false);
-  };
+  }, [requestBody]);
 
-  //   Fetching all threads for a specific assistant
-  const {
-    data: threadsData,
-    mutate: mutateThreads,
-    error: threadsError,
-  } = useSWR(`/api/users/assistant/thread/${selectedAssistantId}`);
+  const { data: threadsData, error: threadsError } = useSWR(
+    `/api/users/assistant/thread/${selectedAssistantId}`,
+    fetchThreads,
+  );
 
   useEffect(() => {
     if (threadsData) {
-      setThreads(threadsData);
+      setThreads(threadsData.threads.docs);
     }
   }, [threadsData]);
 
-  const handleThreadChange = (event) => {
+  const handleThreadChange = async (event) => {
     const value = event.target.value;
 
     if (value === "new-thread") {
-      //   handleCreateThread();
+      await handleCreateThread();
       setSelectedThreadId("");
     } else {
       setSelectedThreadId(value);
     }
   };
 
-  // Hook for creating a message
-  const {
-    data: createMessageResult,
-    mutate: mutateMessages,
-    error: sendMessageError,
-  } = useSWR(
-    `/api/users/assistant/message/thread_veci6NWD4gckMu6BucGCQQxl`, // REMEMBER TO CHANGE THIS!
-    (url) => createMessageFetcher(url, user?.assistantId, "something random"),
-  );
-
-  // Logic for fetching messages
+  // Hook for fetching messages
   const {
     data: messageRecords,
     mutate,
-    error,
+    error: sendMessageError,
   } = useSWR(
-    `/api/users/assistant/message/thread_veci6NWD4gckMu6BucGCQQxl`, // REMEMBER TO CHANGE THIS!
+    selectedThreadId && `/api/users/assistant/message/${selectedThreadId}`,
     (url) => fetch(url).then((res) => res.json()),
   );
 
@@ -126,12 +120,20 @@ export default function MessagesPage() {
   }, [messageRecords]);
 
   const submitChat = async (e: any) => {
+    console.log(newMessage);
     e.preventDefault();
     setIsSending(true);
     if (!newMessage.trim()) return;
 
     try {
-      await mutateMessages();
+      const url = `/api/users/assistant/message/${selectedThreadId}`;
+      const createMessageResult = await createMessageFetcher(
+        url,
+        user?.assistantId,
+        newMessage,
+      );
+      // Handle createMessageResult as needed
+      console.log(createMessageResult);
     } catch (err) {
       console.error(err);
     } finally {
@@ -141,90 +143,111 @@ export default function MessagesPage() {
     setNewMessage("");
   };
 
-  //   if (createMessageResult) return <div>Loading messages...</div>;
-  //   if (error) return <div>Error fetching messages: {error.message}</div>;
+  useEffect(() => {
+    if (!isSending) {
+      mutate();
+    }
+  }, [isSending]);
 
-  const extractMessageText = (contentArray) => {
-    if (
-      !contentArray ||
-      !Array.isArray(contentArray) ||
-      contentArray.length === 0
-    )
-      return "";
-    const textContent = contentArray.find((c) => c.type === "text");
-    return textContent?.text?.value || "No message content";
-  };
+  if (!threads) return <div>Loading...</div>;
+  if (sendMessageError) return <div>Error fetching messages: {sendMessageError.message}</div>;
 
   // Structure of how user + assistant messages are rendered
   const MessagePair = ({ userMessage, assistantMessage }) => {
     const renderMarkdown = (markdownText) => {
-      return marked(markdownText, { sanitize: true }); // sanitize option is for basic XSS protection
+      return marked(markdownText); // sanitize option is for basic XSS protection
     };
+
     return (
       <div className="message-pair">
-        <div className="user-message">
-          <div className="message-content">{userMessage}</div>
-        </div>
-        <div className="assistant-message">
-          <div
-            className="message-content"
-            dangerouslySetInnerHTML={{
-              __html: renderMarkdown(assistantMessage),
-            }}
-          >
-            {/* assistantMessage is now rendered as HTML */}
+        {userMessage && (
+          <div className="user-message">
+            <div className="message-content">{userMessage}</div>
           </div>
-        </div>
+        )}
+        {assistantMessage && (
+          <div className="assistant-message">
+            <div
+              className="message-content"
+              dangerouslySetInnerHTML={{
+                __html: renderMarkdown(assistantMessage),
+              }}
+            />
+          </div>
+        )}
       </div>
     );
   };
 
   // Rendering the experience
-  <div className="chat-container">
-    {/* Chat messages section */}
-    <div className="chat-messages">
-      {selectedThreadId && messageRecords && messageRecords.length > 0 ? (
-        <div className="messages-container">
-          {messageRecords.map((message) => (
-            <MessagePair
-              key={message.id}
-              userMessage={extractMessageText(message.userMessage.content)}
-              assistantMessage={extractMessageText(
-                message.assistantMessage.content,
-              )}
+  return (
+    <div className="chat-container grid grid-cols-6 gap-8">
+      <div className="chat-messages">
+        {messageRecords ? (
+          <div className="messages-container">
+            {messageRecords.conversation.map((message, index) => (
+              <MessagePair
+                key={index}
+                userMessage={message.role === "user" ? message.content : ""}
+                assistantMessage={
+                  message.role === "assistant" ? message.content : ""
+                }
+              />
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+        ) : (
+          <div>No Conversation Availables</div>
+        )}
+
+        {/* The footer contains the input/button, and drop-downs */}
+        <div className="chat-footer">
+          {/* Input form */}
+          <form onSubmit={submitChat} className="message-form">
+            <input
+              type="text"
+              placeholder="Type your message here..."
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              className="message-input"
+              disabled={isSending || !selectedThreadId}
             />
-          ))}
-          <div ref={messagesEndRef} />
+            <button
+              type="submit"
+              className="send-button"
+              disabled={isSending || !selectedThreadId}
+            >
+              {isSending ? <div className="spinner"></div> : "Send"}
+            </button>
+          </form>
+
+          {sendMessageError && (
+            <p>Error sending message: {sendMessageError.message}</p>
+          )}
+
+          <select
+            value={selectedThreadId}
+            onChange={handleThreadChange}
+            disabled={!selectedAssistantId}
+            className="form-element"
+          >
+            <option value="">Select a thread</option>
+            <option value="new-thread">+ Create new thread</option>
+            {threads.map((thread, index) => (
+              <option key={index} value={thread.threadId}>
+                {`${
+                  thread.threadId
+                    ? thread.threadId.length > 35
+                      ? thread.threadId.slice(0, 35) + "..."
+                      : thread.threadId
+                    : "New blank thread"
+                }`}
+              </option>
+            ))}
+          </select>
         </div>
-      ) : (
-        <p>Select a thread to view messages.</p>
-      )}
+      </div>
+      ;
     </div>
-
-    {/* The footer contains the input/button, and drop-downs */}
-    <div className="chat-footer">
-      {/* Input form */}
-      <form onSubmit={submitChat} className="message-form">
-        <input
-          type="text"
-          placeholder="Type your message here..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          className="message-input"
-          disabled={isSending || !selectedThreadId}
-        />
-        <button
-          type="submit"
-          className="send-button"
-          disabled={isSending || !selectedThreadId}
-        >
-          {isSending ? <div className="spinner"></div> : "Send"}
-        </button>
-      </form>
-
-      {sendMessageError && (
-        <p>Error sending message: {sendMessageError.message}</p>
-      )}
-    </div>
-  </div>;
+  );
 }

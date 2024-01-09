@@ -1,7 +1,7 @@
 import { openai } from "@/payload/utilities/openai";
 import { getPayloadClient } from "@/payload/payloadClient";
 
-const waitForMessageProcessing = async (threadId, runId) => {
+const waitForMessageProcessing = async (threadId: string, runId: string) => {
   const maxAttempts = 20;
   const timeout = 1000;
 
@@ -37,11 +37,13 @@ const waitForMessageProcessing = async (threadId, runId) => {
   throw new Error("Message processing timed out");
 };
 
-const getLastMessage = async (threadId, runId) => {
+const getLastMessage = async (threadId: string, runId: string) => {
   const messages: any = await openai.beta.threads.messages.list(threadId);
+
   const lastUserMessage = messages.body.data.filter(
     (message) => message.role === "user",
   )[0];
+
   const lastAssistantMessage = messages.body.data
     .filter(
       (message) => message.run_id === runId && message.role === "assistant",
@@ -54,7 +56,10 @@ const getLastMessage = async (threadId, runId) => {
   };
 };
 
-const automaticNameForThread = async (threadId, userQuestion) => {
+const automaticNameForThread = async (
+  threadId: string,
+  userQuestion: string,
+) => {
   const payload = await getPayloadClient();
 
   const threadName = await payload.find({
@@ -103,7 +108,7 @@ export default async function handler(req: any, res: any) {
   const { userQuestion, assistantId } = req.body;
   const { threadId } = req.query;
 
-  console.log(req.method)
+  console.log(req.method);
 
   switch (req.method) {
     case "POST":
@@ -136,25 +141,34 @@ export default async function handler(req: any, res: any) {
       } catch (error) {
         payload.logger.error(error);
       }
-    case "GET":
+    case "GET": // GET ALL MESSAGES FROM A GIVEN THREAD
       try {
-        const thread = await payload.find({
-            collection: "thread",
-            where: {
-              threadId: {
-                equals: threadId,
-              },
+        await payload.find({
+          collection: "thread",
+          where: {
+            threadId: {
+              equals: threadId,
             },
-          });
+          },
+        });
 
-        const threadMessages = await openai.beta.threads.messages.list(threadId);
+        const threadMessages = await openai.beta.threads.messages.list(
+          threadId,
+          {
+            limit: 100,
+            order: "asc",
+          },
+        );
 
         return res.status(200).json({
           success: true,
           conversation: threadMessages.data.map((message) => {
             return {
               role: message.role,
-              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+              content:
+                message.content[0].type === "text"
+                  ? message.content[0].text.value
+                  : "",
             };
           }),
         });
