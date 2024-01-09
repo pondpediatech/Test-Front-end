@@ -1,8 +1,10 @@
 "use client";
+import useSWR from "swr";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { marked } from "marked";
-import useSWR from "swr";
 import { useAuth } from "../../../_providers/Auth";
+import type { Thread } from "../../../payload-types";
+
 import "./page.css";
 
 const createThreadFetcher = (url: string, requestBody: any) => {
@@ -43,20 +45,20 @@ const fetchThreads = async (url) => {
 export default function MessagesPage() {
   const [newMessage, setNewMessage] = useState("");
   const [isCreatingThread, setIsCreatingThread] = useState(false);
-  const [threads, setThreads] = useState([]);
+  const [threads, setThreads] = useState<Thread[]>([]);
   const [isSending, setIsSending] = useState(false);
   const [selectedThreadId, setSelectedThreadId] = useState("");
 
   const { user } = useAuth();
   const selectedAssistantId = user?.assistantId;
 
-  const requestBody = {
-    assistantId: selectedAssistantId,
-    userId: user?.id,
-    username: user?.username,
-  };
-
   const handleCreateThread = useCallback(async () => {
+    const requestBody = {
+      assistantId: selectedAssistantId,
+      userId: user?.id,
+      username: user?.username,
+    };
+
     setIsCreatingThread(true);
     try {
       const response = await fetch("/api/users/assistant/message", {
@@ -79,7 +81,7 @@ export default function MessagesPage() {
     } finally {
       setIsCreatingThread(false);
     }
-  }, [requestBody]);
+  }, [selectedAssistantId, user?.id, user?.username]);
 
   const { data: threadsData, error: threadsError } = useSWR(
     `/api/users/assistant/thread/${selectedAssistantId}`,
@@ -113,7 +115,7 @@ export default function MessagesPage() {
     (url) => fetch(url).then((res) => res.json()),
   );
 
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -147,10 +149,11 @@ export default function MessagesPage() {
     if (!isSending) {
       mutate();
     }
-  }, [isSending]);
+  }, [isSending, mutate]);
 
   if (!threads) return <div>Loading...</div>;
-  if (sendMessageError) return <div>Error fetching messages: {sendMessageError.message}</div>;
+  if (sendMessageError)
+    return <div>Error fetching messages: {sendMessageError.message}</div>;
 
   // Structure of how user + assistant messages are rendered
   const MessagePair = ({ userMessage, assistantMessage }) => {
