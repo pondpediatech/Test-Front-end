@@ -9,7 +9,7 @@ import Thread from '../pages/api/[collection]/Thread';
 export default buildConfig({
   db: postgresAdapter({
     pool: {
-      connectionString: "postgresql://pondpediatech:postgresqlc18h27no3@127.0.0.1:5432/pondpedia_database",
+      connectionString: process.env.DATABASE_URI,
     },
     migrationDir: path.resolve(__dirname, 'migrations'),
   }),

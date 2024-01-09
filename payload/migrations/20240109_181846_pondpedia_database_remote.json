@@ -1,5 +1,5 @@
 {
-  "id": "08fe89a4-2ccf-4913-afdd-23ed7ca5a3a3",
+  "id": "81d65e0d-52ce-4f81-b0ca-ad42ac663e9d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -234,6 +234,12 @@
           "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "assistant_id": {
+          "name": "assistant_id",
+          "type": "varchar",
+          "primaryKey": false,
           "notNull": true
         },
         "thread_id": {

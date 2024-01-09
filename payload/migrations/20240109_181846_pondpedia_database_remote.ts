@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 
 CREATE TABLE IF NOT EXISTS "thread" (
 	"id" serial PRIMARY KEY NOT NULL,
+	"assistant_id" varchar NOT NULL,
 	"thread_id" varchar NOT NULL,
 	"name" varchar NOT NULL,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
