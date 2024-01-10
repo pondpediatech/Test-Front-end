@@ -122,7 +122,6 @@ export default function MessagesPage() {
   }, [messageRecords]);
 
   const submitChat = async (e: any) => {
-    console.log(newMessage);
     e.preventDefault();
     setIsSending(true);
     if (!newMessage.trim()) return;
@@ -135,7 +134,6 @@ export default function MessagesPage() {
         newMessage,
       );
       // Handle createMessageResult as needed
-      console.log(createMessageResult);
     } catch (err) {
       console.error(err);
     } finally {

@@ -83,8 +83,6 @@ const automaticNameForThread = async (
         ],
       });
 
-      console.log(completion.choices[0].message.content);
-
       const result = await payload.update({
         collection: "thread", // required
         where: {

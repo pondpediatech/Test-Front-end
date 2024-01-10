@@ -42,8 +42,6 @@ const SigninPage: React.FC = () => {
       try {
         const firebaseAuth = await signInWithEmailAndPassword(auth, data.email, data.password);
 
-        console.log(firebaseAuth);
-
         if (!firebaseAuth.user.emailVerified) {
           setError("Email belum terverifikasi, silahkan cek email anda");
           return;

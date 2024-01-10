@@ -15,9 +15,6 @@ const adminsAndUser: Access = ({ req: { user } }) => {
     }
   }
 
-  console.log('help meeeeee',user)
-
-
   return false
 }
 

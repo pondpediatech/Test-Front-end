@@ -98,11 +98,8 @@ const ProfilePage: React.FC = () => {
           },
         );
 
-        console.log(data);
-
         if (response.ok) {
           const json = await response.json();
-          console.log(json.doc);
           setUser(json.doc);
           setSuccessDataPribadi("Berhasil diperbarui!");
           setErrorDataPribadi("");
@@ -136,8 +133,6 @@ const ProfilePage: React.FC = () => {
             },
           },
         );
-
-        console.log(data);
 
         if (response.ok) {
           const json = await response.json();

@@ -35,8 +35,8 @@ const Footer = () => {
                     />
                   </Link>
                   <p className="mb-9 text-base leading-relaxed text-body-color dark:text-body-color-dark">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Integer lobortis.
+                    Teknologi Budidaya Canggih Untuk Akuakultur Yang
+                    Berkelanjutan
                   </p>
                   <div className="flex items-center">
                     <a
@@ -105,12 +105,20 @@ const Footer = () => {
                     Useful Links
                   </h2>
                   <ul>
-                    <li>
+                    {/* <li>
                       <a
                         href="/blogs"
                         className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
                       >
                         Blog
+                      </a>
+                    </li> */}
+                    <li>
+                      <a
+                        href="/contact"
+                        className="mb-4 inline-block text-base text-body-color duration-300 hover:text-primary dark:text-body-color-dark dark:hover:text-primary"
+                      >
+                        Contact
                       </a>
                     </li>
                     <li>
@@ -205,10 +213,8 @@ const Footer = () => {
             <div className="h-px w-full bg-gradient-to-r from-transparent via-[#D2D8E183] to-transparent dark:via-[#959CB183]"></div>
             <div className="py-8">
               <p className="text-center text-base text-body-color dark:text-white">
-                Template by UIdeck and{" "}
-                <a href="https://nextjstemplates.com" rel="nofollow noopener">
-                  Next.js Templates {pathname}
-                </a>
+                &copy; {new Date().getFullYear()} PondPedia. All rights
+                reserved.
               </p>
             </div>
           </div>
