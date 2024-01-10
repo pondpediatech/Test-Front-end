@@ -15,17 +15,8 @@ const waitForMessageProcessing = async (threadId: string, runId: string) => {
     }
 
     if (runStatus.status === "completed") {
-      console.log("Completed!");
+      // console.log("Completed!");
       return runStatus;
-    }
-
-    if (runStatus.status === "in_progress") {
-      console.log("Still in Progress!");
-      console.log(attempts);
-
-      if (attempts === 18) {
-        attempts = 0;
-      }
     }
 
     // if (runStatus.status === "requires_action") {
@@ -109,7 +100,7 @@ export default async function handler(req: any, res: any) {
   console.log(req.method);
 
   switch (req.method) {
-    case "POST":
+    case "POST": // SEND A MESSAGE 
       try {
         await openai.beta.threads.messages.create(threadId, {
           role: "user",

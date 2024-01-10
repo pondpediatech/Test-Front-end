@@ -39,7 +39,7 @@ export default function Home() {
         center
       />
       <Brands />
-      <AboutSectionOne />
+      {/* <AboutSectionOne /> */}
       {/* <AboutSectionTwo /> */}
       {/* <Testimonials /> */}
       {/* <Pricing /> */}

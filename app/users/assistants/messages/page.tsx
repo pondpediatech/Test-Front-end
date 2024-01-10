@@ -88,12 +88,6 @@ export default function MessagesPage() {
     fetchThreads,
   );
 
-  useEffect(() => {
-    if (threadsData) {
-      setThreads(threadsData.threads.docs);
-    }
-  }, [threadsData]);
-
   const handleThreadChange = async (event) => {
     const value = event.target.value;
 
@@ -118,10 +112,22 @@ export default function MessagesPage() {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (threadsData) {
+      setThreads(threadsData.threads.docs);
+    }
+  }, [threadsData]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messageRecords]);
 
-  const submitChat = async (e: any) => {
+  useEffect(() => {
+    if (!isSending) {
+      mutate();
+    }
+  }, [isSending, mutate]);
+
+  const handleMessageSubmit = async (e: any) => {
     e.preventDefault();
     setIsSending(true);
     if (!newMessage.trim()) return;
@@ -142,12 +148,6 @@ export default function MessagesPage() {
 
     setNewMessage("");
   };
-
-  useEffect(() => {
-    if (!isSending) {
-      mutate();
-    }
-  }, [isSending, mutate]);
 
   if (!threads) return <div>Loading...</div>;
   if (sendMessageError)
@@ -204,7 +204,7 @@ export default function MessagesPage() {
         {/* The footer contains the input/button, and drop-downs */}
         <div className="chat-footer">
           {/* Input form */}
-          <form onSubmit={submitChat} className="message-form">
+          <form onSubmit={handleMessageSubmit} className="message-form">
             <input
               type="text"
               placeholder="Type your message here..."

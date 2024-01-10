@@ -12,6 +12,18 @@ import {
 } from "../../../../../payload/utilities/firebase-config";
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
 
+function formatDate(dateString) {
+  let date = new Date(dateString);
+  let month = "" + (date.getMonth() + 1),
+    day = "" + date.getDate(),
+    year = date.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+}
+
 type FormData = {
   name: string | undefined;
   username: string;
@@ -118,41 +130,41 @@ const ProfilePage: React.FC = () => {
     [user, setUser, reset],
   );
 
-  const onSubmitAkun = useCallback(
-    async (data: FormData) => {
-      if (user) {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/${user.id}`,
-          {
-            // Make sure to include cookies with fetch
-            credentials: "include",
-            method: "PATCH",
-            body: JSON.stringify(data),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          },
-        );
+  // const onSubmitAkun = useCallback(
+  //   async (data: FormData) => {
+  //     if (user) {
+  //       const response = await fetch(
+  //         `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/${user.id}`,
+  //         {
+  //           // Make sure to include cookies with fetch
+  //           credentials: "include",
+  //           method: "PATCH",
+  //           body: JSON.stringify(data),
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         },
+  //       );
 
-        if (response.ok) {
-          const json = await response.json();
-          console.log(json.doc);
-          setUser(json.doc);
-          setSuccessDataPribadi("Berhasil diperbarui!");
-          setErrorDataPribadi("");
-          reset({
-            email: json.doc.email,
-            password: "",
-            passwordConfirm: "",
-            phone_number: json.doc.phone_number,
-          });
-        } else {
-          setErrorDataPribadi("Gagal diperbarui!");
-        }
-      }
-    },
-    [user, setUser, reset],
-  );
+  //       if (response.ok) {
+  //         const json = await response.json();
+  //         console.log(json.doc);
+  //         setUser(json.doc);
+  //         setSuccessDataPribadi("Berhasil diperbarui!");
+  //         setErrorDataPribadi("");
+  //         reset({
+  //           email: json.doc.email,
+  //           password: "",
+  //           passwordConfirm: "",
+  //           phone_number: json.doc.phone_number,
+  //         });
+  //       } else {
+  //         setErrorDataPribadi("Gagal diperbarui!");
+  //       }
+  //     }
+  //   },
+  //   [user, setUser, reset],
+  // );
 
   useEffect(() => {
     if (user === null) {
@@ -190,8 +202,7 @@ const ProfilePage: React.FC = () => {
                     successProfile ? "text-green-500" : ""
                   } ${errorProfile ? "text-red-500" : ""}`}
                 >
-                  Profil{" "}
-                  {successProfile ? successProfile : errorProfile}
+                  Profil {successProfile ? successProfile : errorProfile}
                 </h3>
               </div>
               <div className="p-7">
@@ -294,7 +305,7 @@ const ProfilePage: React.FC = () => {
                       type="submit"
                       disabled={isSubmitting || !isDirty}
                     >
-                      {isSubmitting ? "Loading..." : "Save"}
+                      Save
                     </button>
                   </div>
                 </form>
@@ -577,15 +588,15 @@ const ProfilePage: React.FC = () => {
                       </label>
                       <input
                         type="date"
-                        {...register('birthdate', {
+                        {...register("birthdate", {
                           pattern: {
                             value: /^\d{4}-\d{2}-\d{2}$/,
-                            message: 'Invalid date format. Expected format is YYYY-MM-DD'
-                          }
+                            message:
+                              "Invalid date format. Expected format is YYYY-MM-DD",
+                          },
                         })}
                         id="birthdate"
                         className="custom-input-date custom-input-date-1 w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 font-medium outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                        
                       />
                     </div>
                   </div>
@@ -789,7 +800,7 @@ const ProfilePage: React.FC = () => {
                       type="submit"
                       disabled={isSubmitting || !isDirty}
                     >
-                      {isSubmitting ? "Loading..." : "Save"}
+                      Save
                     </button>
                   </div>
                 </form>

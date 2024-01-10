@@ -1,24 +1,24 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from "payload/types";
 
-import { admins } from '../access/admins'
-import { anyone } from '../access/anyone'
-import adminsAndUser from './access/adminsAndUser'
-import { checkRole } from './checkRole'
-import { ensureFirstUserIsAdmin } from './hooks/ensureFirstUserIsAdmin'
-import { loginAfterCreate } from './hooks/loginAfterCreate'
+import { admins } from "../access/admins";
+import { anyone } from "../access/anyone";
+import adminsAndUser from "./access/adminsAndUser";
+import { checkRole } from "./checkRole";
+import { ensureFirstUserIsAdmin } from "./hooks/ensureFirstUserIsAdmin";
+import { loginAfterCreate } from "./hooks/loginAfterCreate";
 
 const Users: CollectionConfig = {
-  slug: 'users',
+  slug: "users",
   admin: {
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'email'],
+    useAsTitle: "name",
+    defaultColumns: ["name", "email"],
   },
   access: {
     read: adminsAndUser,
     create: anyone,
     update: adminsAndUser,
     delete: admins,
-    admin: ({ req: { user } }) => checkRole(['admin'], user),
+    admin: ({ req: { user } }) => checkRole(["admin"], user),
   },
   hooks: {
     afterChange: [loginAfterCreate],
@@ -26,145 +26,159 @@ const Users: CollectionConfig = {
   auth: true,
   fields: [
     {
-      name: 'id',
-      type: 'text',
+      name: "id",
+      type: "text",
       required: true,
     },
     {
-      name: 'assistantId',
-      type: 'text',
+      name: "assistantId",
+      type: "text",
       required: true,
     },
     {
-      name: 'name',
-      type: 'text',
+      name: "name",
+      type: "text",
     },
     {
-      name: 'username',
-      type: 'text',
+      name: "username",
+      type: "text",
       required: true,
     },
     {
-      name: 'phone_number',
-      type: 'text',
+      name: "phone_number",
+      type: "text",
       required: true,
     },
     {
-      name: 'profile_picture',
-      type: 'text',
+      name: "profile_picture",
+      type: "text",
     },
     {
-      name: 'uses_social_login',
-      type: 'checkbox',
+      name: "uses_social_login",
+      type: "checkbox",
       defaultValue: false,
       required: true,
     },
     {
-      name: 'occupation',
-      type: 'text',
+      name: "occupation",
+      type: "text",
     },
     {
-      name: 'education',
-      type: 'select',
+      name: "education",
+      type: "select",
       options: [
         {
-          label: 'Belum Memilih',
-          value: '',
+          label: "Belum Memilih",
+          value: "",
         },
         {
-          label: 'Tidak/Belum Sekolah',
-          value: 'tidak-belum-sekolah',
+          label: "Tidak/Belum Sekolah",
+          value: "tidak-belum-sekolah",
         },
         {
-          label: 'Tidak Tamat SD/Sederajat',
-          value: 'tidak-tamat-sd-sederajat',
+          label: "Tidak Tamat SD/Sederajat",
+          value: "tidak-tamat-sd-sederajat",
         },
         {
-          label: 'Tamat SD/Sederajat',
-          value: 'tamat-sd-sederajat',
+          label: "Tamat SD/Sederajat",
+          value: "tamat-sd-sederajat",
         },
         {
-          label: 'SMP/Sederajat',
-          value: 'smp-sederajat',
+          label: "SMP/Sederajat",
+          value: "smp-sederajat",
         },
         {
-          label: 'SMA',
-          value: 'sma',
+          label: "SMA",
+          value: "sma",
         },
         {
-          label: 'SMK',
-          value: 'smk',
+          label: "SMK",
+          value: "smk",
         },
         {
-          label: 'Diploma I-III',
-          value: 'diploma_1_3',
+          label: "Diploma I-III",
+          value: "diploma_1_3",
         },
         {
-          label: 'Diploma IV/Strata I',
-          value: 'diploma_4_s1',
+          label: "Diploma IV/Strata I",
+          value: "diploma_4_s1",
         },
         {
-          label: 'Strata II',
-          value: 'strata_2',
+          label: "Strata II",
+          value: "strata_2",
         },
         {
-          label: 'Strata III',
-          value: 'strata_3',
+          label: "Strata III",
+          value: "strata_3",
         },
       ],
     },
     {
-      name: 'gender',
-      type: 'select',
+      name: "gender",
+      type: "select",
       options: [
         {
-          label: 'Belum Memilih',
-          value: '',
+          label: "Belum Memilih",
+          value: "",
         },
         {
-          label: 'Laki-laki',
-          value: 'laki-laki',
+          label: "Laki-laki",
+          value: "laki-laki",
         },
         {
-          label: 'Perempuan',
-          value: 'perempuan',
+          label: "Perempuan",
+          value: "perempuan",
         },
         {
-          label: 'Memilih untuk tidak menyebutkan',
-          value: 'memilih_untuk_tidak_menyebutkan',
+          label: "Memilih untuk tidak menyebutkan",
+          value: "memilih_untuk_tidak_menyebutkan",
         },
       ],
     },
     {
-      name: 'birthdate',
-      type: 'date',
+      name: "birthdate",
+      type: "date",
       admin: {
         date: {
-          displayFormat: 'yyyy-MM-dd',
-        }
-      }
+          displayFormat: "yyyy-MM-dd",
+        },
+      },
+      hooks: {
+        afterRead: [
+          ({ value }) => {
+            let date = new Date(value);
+            let month = "" + (date.getMonth() + 1),
+              day = "" + date.getDate(),
+              year = date.getFullYear();
+
+            if (month.length < 2) month = "0" + month;
+            if (day.length < 2) day = "0" + day;
+            return [year, month, day].join("-");
+          },
+        ],
+      },
     },
     {
-      name: 'birthplace',
-      type: 'text',
+      name: "birthplace",
+      type: "text",
     },
     {
-      name: 'bio',
-      type: 'text',
+      name: "bio",
+      type: "text",
     },
     {
-      name: 'roles',
-      type: 'select',
+      name: "roles",
+      type: "select",
       hasMany: true,
-      defaultValue: ['user'],
+      defaultValue: ["user"],
       options: [
         {
-          label: 'admin',
-          value: 'admin',
+          label: "admin",
+          value: "admin",
         },
         {
-          label: 'user',
-          value: 'user',
+          label: "user",
+          value: "user",
         },
       ],
       hooks: {
@@ -178,6 +192,6 @@ const Users: CollectionConfig = {
     },
   ],
   timestamps: true,
-}
+};
 
-export default Users
+export default Users;
