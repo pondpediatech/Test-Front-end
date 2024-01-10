@@ -3,8 +3,7 @@ import AboutSectionTwo from "@/components/About/AboutSectionTwo";
 // import Blog from "@/components/Blog";
 // import Contact from "@/components/Contact";
 // import Pricing from "@/components/Pricing";
-// import Testimonials from "@/components/Testimonials";
-// import Features from "@/components/Features";
+import Features from "@/components/Features";
 import Brands from "@/components/Brands";
 import SectionTitle from "@/components/Common/SectionTitle";
 import ScrollUp from "@/components/Common/ScrollUp";
@@ -25,25 +24,20 @@ export default function Home() {
     <>
       <ScrollUp />
       <Hero />
-      {/* <Features /> */}
+      <Video />
+      <SectionTitle title="Didukung Oleh" paragraph="" center />
+      <Brands />
       <SectionTitle
         title="Fitur Utama"
         paragraph="PondPedia menawarkan beragam fitur unggul untuk mendukung praktik akuakultur yang berkelanjutan."
         center
       />
       <FeaturesTab />
-      {/* <Video /> */}
-      <SectionTitle
-        title="Didukung Oleh"
-        paragraph=""
-        center
-      />
-      <Brands />
-      {/* <AboutSectionOne /> */}
-      {/* <AboutSectionTwo /> */}
-      {/* <Testimonials /> */}
-      {/* <Pricing /> */}
       {/* <Blog /> */}
+      {/* <AboutSectionTwo /> */}
+      {/* <AboutSectionOne /> */}
+      {/* <Features /> */}
+      {/* <Pricing /> */}
       {/* <Contact /> */}
     </>
   );
