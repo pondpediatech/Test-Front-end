@@ -3,21 +3,31 @@ import "./globals.css";
 import "./data-tables-css.css";
 import "./satoshi.css";
 import { useState, useEffect } from "react";
+import { useAuth } from "../../app/_providers/Auth";
+import { useRouter } from 'next/navigation';
 import Loader from "@/components/Common/Loader";
 import Sidebar from "@/components/SidebarDashboard";
 import Header from "@/components/HeaderDashboard";
+
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useAuth();
+  const router = useRouter();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
+    if (user === null) {
+      router.push('/login');
+    } else {
+      setTimeout(() => setLoading(false), 1000);
+    }
+   }, [user]);
 
   return (
     <div lang="en">
@@ -44,7 +54,7 @@ export default function RootLayout({
                 {/* <!-- ===== Header End ===== --> */}
 
                 {/* <!-- ===== Main Content Start ===== --> */}
-                  <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                  <div className="mx-auto w-full max-w-screen-2xl p-4 md:p-6 2xl:p-10">
                     {children}
                   </div>
                 {/* <!-- ===== Main Content End ===== --> */}

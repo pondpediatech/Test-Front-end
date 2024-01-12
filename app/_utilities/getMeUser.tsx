@@ -34,6 +34,7 @@ export const getMeUser = async (args?: {
   
   if (nullUserRedirect && (!meUserReq.ok || !user)) {
     console.log(nullUserRedirect)
+    redirect(nullUserRedirect);
   }
 
   return {

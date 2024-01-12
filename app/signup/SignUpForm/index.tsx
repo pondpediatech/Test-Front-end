@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { Metadata } from "next";
-
-import React, { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../_providers/Auth";
+import toast, { Toaster } from "react-hot-toast";
+import React, { useCallback, useRef, useState } from "react";
 
 export const metadata: Metadata = {
-  title: "PondPedia | Registrasi akun",
-  description: "This is Sign Up Page for PondPedia",
+  title: "Registrasi Akun | PondPedia",
+  description: "Halaman Registrasi Akun PondPedia",
   // other metadata
 };
 
@@ -24,7 +23,6 @@ type FormData = {
 };
 
 const SignupPage: React.FC = () => {
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
@@ -48,36 +46,75 @@ const SignupPage: React.FC = () => {
           "Content-Type": "application/json",
         },
       };
-  
+
+      setLoading(true); // Start loading immediately
+
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/users/create`,
-          requestOptions
+          requestOptions,
         );
-  
+
         const messageResponse = await response.json();
         const message = messageResponse.message;
-  
+
         if (!response.ok) {
           setError(message);
-  
-          setTimeout(() => {
-            setError("");
-            setLoading(true);
-          }, 6000);
-  
+          setLoading(false); // Stop loading after error
+          toast.custom((t) => (
+            <div
+              className={`${
+                t.visible ? "animate-enter" : "animate-leave"
+              } pointer-events-auto flex w-full max-w-md rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5`}
+            >
+              <div className="w-0 flex-1 p-4">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <img
+                      className="h-10 w-10 rounded-full"
+                      src="images/logo/logo-1.png"
+                      alt=""
+                    />
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="text-gray-900 text-sm font-medium">Asisten Ponder</p>
+                    <p className="text-red-600 font-bold mt-1 text-sm">{message}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ));
           return;
-        } else {
-          setWarning(message);
-  
-          setTimeout(() => {
-            setWarning("");
-            setLoading(true);
-          }, 6000);
         }
-  
+
+        setWarning(message);
+        setLoading(false); // Stop loading after success
+        toast.custom((t) => (
+          <div
+            className={`${
+              t.visible ? "animate-enter" : "animate-leave"
+            } pointer-events-auto flex w-full max-w-md rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5`}
+          >
+            <div className="w-0 flex-1 p-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 pt-0.5">
+                  <img
+                    className="h-10 w-10 rounded-full"
+                    src="images/logo/logo-1.png"
+                    alt=""
+                  />
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-gray-900 text-sm font-medium">Asisten Ponder</p>
+                  <p className="text-gray-500 mt-1 text-sm">{message}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ));
       } catch (error) {
         setError(error);
+        setLoading(false); // Stop loading after error
       }
     },
     [setError, setWarning],
@@ -157,25 +194,11 @@ const SignupPage: React.FC = () => {
                 </button> */}
                 <div className="mb-8 flex items-center justify-center">
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
-                  {error ? (
-                    <span className="text-sm text-red-500">
-                      <p className="w-full px-5 text-center text-base font-medium text-red-500">
-                        {error}
-                      </p>
-                    </span>
-                  ) : warning ? (
-                    <span className="text-yellow-500 text-sm">
-                      <p className="text-yellow-500 w-full px-5 text-center text-base font-medium">
-                        {warning}
-                      </p>
-                    </span>
-                  ) : (
-                    <span className="text-sm text-red-500">
-                      <p className="w-full px-5 text-center text-base font-medium text-body-color">
-                        Registrasi melalui email
-                      </p>
-                    </span>
-                  )}
+                  <span className="text-sm text-red-500">
+                    <p className="w-full px-5 text-center text-base font-medium text-body-color">
+                      Registrasi melalui email
+                    </p>
+                  </span>
                   <span className="hidden h-[1px] w-full max-w-[60px] bg-body-color/50 sm:block"></span>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -322,10 +345,10 @@ const SignupPage: React.FC = () => {
                   <div className="mb-6">
                     <button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={loading}
                       className="shadow-submit dark:shadow-submit-dark flex w-full items-center justify-center rounded-sm bg-primary px-9 py-4 text-base font-medium text-white duration-300 hover:bg-primary/90"
                     >
-                      {isSubmitting ? "Loading..." : "Sign Up"}
+                      {loading ? "Loading..." : "Sign Up"}
                     </button>
                   </div>
                 </form>
@@ -397,6 +420,7 @@ const SignupPage: React.FC = () => {
           </svg>
         </div>
       </section>
+      <Toaster />
     </>
   );
 };

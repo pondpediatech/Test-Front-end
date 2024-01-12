@@ -42,14 +42,6 @@ const LogoutPage: React.FC = () => {
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
               <div className="mx-auto max-w-[530px] text-center">
-                <div className="mx-auto mb-9 text-center">
-                  <Image
-                    fill
-                    className="dark:hidden"
-                    src="/images/illustration/illustration-02.svg"
-                    alt="Dotted Shape"
-                  />
-                </div>
                 <h3 className="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl">
                   {error || success}
                 </h3>
@@ -60,7 +52,7 @@ const LogoutPage: React.FC = () => {
                   href="/"
                   className="shadow-signUp rounded-md bg-primary px-8 py-3 text-base font-bold text-white duration-300 hover:bg-white hover:text-primary md:px-9 lg:px-8 xl:px-9"
                 >
-                  Kembali ke halaman awal
+                  Kembali ke halaman utama
                 </Link>
               </div>
             </div>

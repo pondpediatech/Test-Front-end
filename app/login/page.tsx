@@ -2,7 +2,6 @@ import React from 'react'
 
 import { getMeUser } from '../_utilities/getMeUser'
 import SigninPage from './LogInForm'
-
 import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Login | PondPedia",

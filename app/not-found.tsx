@@ -3,8 +3,8 @@ import Link from "next/link";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Error Page | Free Next.js Template for Startup and SaaS",
-  description: "This is Error Page for Startup Nextjs Template",
+  title: "Error | PondPedia",
+  description: "Halaman tidak ditemukan PondPedia",
   // other metadata
 };
 
@@ -142,17 +142,16 @@ const ErrorPage = () => {
                   </svg>
                 </div>
                 <h3 className="mb-4 text-3xl font-bold text-black dark:text-white sm:text-4xl">
-                  Sorry, the page can’t be found
+                  Maaf, halaman tidak ditemukan
                 </h3>
                 <p className="mb-10 text-base font-medium leading-relaxed text-body-color sm:text-lg sm:leading-relaxed">
-                  The page you were looking for appears to have been moved,
-                  deleted or does not exist.
+                  Halaman yang anda cari nampaknya sudah dihapus atau tidak ada
                 </p>
                 <Link
                   href="/users"
                   className="px-8 py-3 text-base font-bold text-white duration-300 rounded-md bg-primary shadow-signUp hover:bg-white hover:text-primary md:px-9 lg:px-8 xl:px-9"
                 >
-                  Back to Homepage
+                  Kembali ke halaman utama
                 </Link>
               </div>
             </div>

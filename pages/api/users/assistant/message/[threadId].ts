@@ -100,7 +100,7 @@ export default async function handler(req: any, res: any) {
   console.log(req.method);
 
   switch (req.method) {
-    case "POST": // SEND A MESSAGE 
+    case "POST": // SEND A MESSAGE
       try {
         await openai.beta.threads.messages.create(threadId, {
           role: "user",
@@ -168,8 +168,35 @@ export default async function handler(req: any, res: any) {
           message: "Error retrieving thread.",
         });
       }
+    case "DELETE": // DELETE A THREAD FROM A GIVEN THREAD ID
+      try {
+        await payload.delete({
+          collection: "thread",
+          where: {
+            threadId: {
+              equals: threadId,
+            },
+          },
+        });
+
+        const deletedThread = await openai.beta.threads.del(threadId);
+
+        return res.status(200).json({
+          success: true,
+          data: {
+            deletedThread,
+          },
+          message: "A thread deleted successfully.",
+        });
+      } catch (error) {
+        return res.status(500).json({
+          success: false,
+          data: { error: error.message },
+          message: "Error deleting a thread.",
+        });
+      }
     default:
-      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["PUT"]);
       res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }

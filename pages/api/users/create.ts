@@ -6,6 +6,7 @@ import {
   auth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  onAuthStateChanged,
 } from "../../../payload/utilities/firebase-config";
 
 type ResponseData = {
@@ -13,26 +14,23 @@ type ResponseData = {
   user: Object;
 };
 
-const handler = async (
-  req: NextApiRequest,
-  res: NextApiResponse<ResponseData>,
-) => {
+const handler = async (req: NextApiRequest, res:NextApiResponse<ResponseData>) => {
   let firebaseAuth;
-  const { name, email, occupation, username, phone_number, password } = req.body;
+  const { name, email, occupation, username, phone_number, password } =
+    req.body;
   const payload = await getPayloadClient();
 
+  // Check if user exists in parallel
+  const existingUserCheck = payload.find({
+    collection: "users",
+    where: {
+      email: { equals: email },
+      username: { equals: username },
+    },
+  });
+
   try {
-    const existingUser = await payload.find({
-      collection: "users",
-      where: {
-        email: {
-          equals: email,
-        },
-        username: {
-          equals: username,
-        }
-      },
-    });
+    const existingUser = await existingUserCheck;
 
     if (existingUser.docs.length > 0) {
       return res.status(409).json({
@@ -47,9 +45,16 @@ const handler = async (
       model: config.model,
     });
 
-    firebaseAuth = await createUserWithEmailAndPassword(auth, email, password);
+    // Create user in parallel
+    const createUserTask = createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
+    
+    firebaseAuth = await createUserTask;
 
-    const user = await payload.create({
+    const createPayloadUserTask = payload.create({
       collection: "users",
       data: {
         id: firebaseAuth.user.uid,
@@ -64,14 +69,20 @@ const handler = async (
       },
     });
 
-    sendEmailVerification(auth.currentUser!)
+    firebaseAuth = await createUserTask;
+    const user = await createPayloadUserTask;
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        sendEmailVerification(user);
+      }
+    });
 
     return res.status(201).json({
       message:
         "Berhasil membuat akun. Silahkan cek email anda untuk verifikasi akun",
       user,
     });
-
   } catch (error) {
     let message = "";
     switch (error.code) {
