@@ -27,7 +27,7 @@ export default function RootLayout({
     } else {
       setTimeout(() => setLoading(false), 1000);
     }
-   }, [user]);
+   }, [router, user]);
 
   return (
     <div lang="en">

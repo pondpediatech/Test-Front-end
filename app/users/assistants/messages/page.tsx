@@ -43,7 +43,7 @@ const Messages: React.FC = () => {
       userId: user?.id,
       username: user?.username,
     };
-   
+
     setIsCreatingThread(true);
     try {
       const response = await fetch("/api/users/assistant/message", {
@@ -53,21 +53,21 @@ const Messages: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-   
+
       // Handle the response
       if (!response.ok) {
         throw new Error("Failed to create thread");
       }
-   
+
       // Parse the response data
       const newThread = await response.json();
 
-      console.log(newThread)
-   
+      console.log(newThread);
+
       // Add the new thread to threadsData
       // Assuming threadsData is an array
       setThreadList([...threadList, { threadId: newThread.threadId }]);
-   
+
       // Continue with the rest of the logic
     } catch (error) {
       // Handle the error
@@ -75,12 +75,12 @@ const Messages: React.FC = () => {
     } finally {
       setIsCreatingThread(false);
     }
-   }, [selectedAssistantId, user?.id, user?.username]);
+  }, [threadList, selectedAssistantId, user?.id, user?.username]);
 
   const handleChangeThread = async (event) => {
     const value = event.target.getAttribute("thread-id");
 
-    console.log(value)
+    console.log(value);
 
     if (value === "new-thread") {
       await handleCreateThread();
@@ -171,13 +171,11 @@ const Messages: React.FC = () => {
       }));
       setThreadList(threadList);
     }
-  }, [threadsData, isCreatingThread]);
+  }, [threadsData]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [fetchingMessage]);
-
-  console.log(message);
 
   return (
     <>
@@ -199,9 +197,9 @@ const Messages: React.FC = () => {
             <div className="flex max-h-full flex-col overflow-auto">
               <div className="no-scrollbar max-h-full overflow-auto py-6">
                 {/* <!-- Chat List Item --> */}
-                {threadList.map((object, item) => {
-                  return (
-                    <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col gap-2">
+                  {threadList.map((object, item) => {
+                    return (
                       <li
                         key={item}
                         thread-id={object.threadId}
@@ -235,9 +233,9 @@ const Messages: React.FC = () => {
                           style={{ pointerEvents: "none" }}
                         >{`Percakapan ${item + 1}`}</p>
                       </li>
-                    </ul>
-                  );
-                })}
+                    );
+                  })}
+                </ul>
                 {/* <!-- Chat List Item --> */}
               </div>
             </div>
@@ -305,15 +303,15 @@ const Messages: React.FC = () => {
                 <div>Loading...</div> // Or your custom loading component
               ) : messages.length > 0 ? (
                 <>
-                  {messages.map((message) =>
+                  {messages.map((message, index) =>
                     message.role === "user" ? (
-                      <div className="ml-auto max-w-125">
+                      <div key={index} className="ml-auto max-w-125">
                         <div className="mb-5 rounded-2xl rounded-br-none bg-primary px-5 py-3">
                           <p className="text-white">{message.content}</p>
                         </div>
                       </div>
                     ) : (
-                      <div className="max-w-125">
+                      <div key={index} className="max-w-125">
                         <div className="mb-5 rounded-2xl rounded-tl-none bg-gray px-5 py-3 dark:bg-boxdark-2">
                           <p
                             dangerouslySetInnerHTML={{
